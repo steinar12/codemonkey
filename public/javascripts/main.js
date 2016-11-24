@@ -36,14 +36,14 @@ function addProblem(problemInfo){
 		var selected = problem.attr('selectedProblem');
 
 		if(selected == 'false'){
-			problem.css('opacity', '1');
 			problem.attr('selectedProblem', 'true');
+			problem.animate({opacity: '1'},300);
 			problemExtension.animate({height: '55vh'},300);
 			problemRecord.animate({marginTop: '12vh', height: '55vh', width: '30%'},300);
 			description.animate({marginTop: '2vh', opacity: '1'}, 300);
 		} else {
-			problem.css('opacity', '0.7');
 			problem.attr('selectedProblem', 'false');
+			problem.animate({opacity: '0.7'},300);
 			problemExtension.animate({height: '0vh'},300);
 			problemRecord.animate({marginTop: '0vh', height: '12vh', width: '15%'},300);
 			description.animate({marginTop: '-5vh', opacity: '0'}, 300);
