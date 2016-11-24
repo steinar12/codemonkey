@@ -2,8 +2,6 @@ $(document).ready(function(){
 	for(var i = 0; i < problems.length; i++){
 		addProblem(problems[i]);
 	}
-
-	//$('.problem').css('opacity', '0').animate({opacity: 0.7});
 });
 
 function addProblem(problemInfo){
@@ -39,7 +37,7 @@ function addProblem(problemInfo){
 			problem.attr('selectedProblem', 'true');
 			problem.animate({opacity: '1'},300);
 			problemExtension.animate({height: '55vh'},300);
-			problemRecord.animate({marginTop: '12vh', height: '55vh', width: '30%'},300);
+			problemRecord.animate({marginTop: '12vh', height: '55vh', width: '50%'},300);
 			description.animate({marginTop: '2vh', opacity: '1'}, 300);
 		} else {
 			problem.attr('selectedProblem', 'false');
