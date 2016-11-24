@@ -12,6 +12,8 @@ function addProblem(problemInfo){
 	var problemExtension = newDiv(['problem-extension']);
 	var problemDescription = newDiv(['problem-description']);
 	var description = newDiv(['description']);
+	var solveButton = newDiv(['solve-button']);
+	solveButton.text('Solve');
 
 	var problemDiff = newDiv(['problem-difficulty', problemInfo.difficulty.toLowerCase()]);
 	var problemTitle = newDiv(['problem-title']);
@@ -32,6 +34,7 @@ function addProblem(problemInfo){
 
 	problemSimple.click(function(){
 		var selected = problem.attr('selectedProblem');
+		console.log(solveButton);
 
 		if(selected == 'false'){
 			problem.attr('selectedProblem', 'true');
@@ -60,6 +63,7 @@ function addProblem(problemInfo){
 
 	problemDescription.append(description);
 	problemExtension.append(problemDescription);
+	problemExtension.append(solveButton);
 	problem.append(problemSimple);
 	problem.append(problemExtension);
 	$('.problem-container').append(problem);
@@ -157,6 +161,12 @@ var problems = [
 	{
 		difficulty: 'Hard',
 		title: 'Counting raindrops',
+		record: '43ms',
+		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+	},
+	{
+		difficulty: 'Hard',
+		title: 'Circus of death',
 		record: '43ms',
 		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
 	}
