@@ -1,8 +1,101 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+html, body {
+  	padding: 0px;
+  	margin: 0px;
+  	font-family: 'Raleway', sans-serif;
+  	background-color: rgb(235,235,235);
 }
 
-a {
-  color: #00B7FF;
+.page-header {
+  	height: 20vh;
+  	background-color: rgb(230,230,230);
+  	margin-bottom: 3vh;
+}
+
+.main-wrapper {
+	min-height: 80vh;
+}
+
+.problem-container {
+	width: 40vw;
+	min-height: 80vh;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.problem {
+	background-color: rgb(210,210,210);
+	margin-top: 1vh;
+	margin-bottom: 1vh;
+	opacity: 0.7;
+}
+
+.problem-simple {
+	display: flex;
+	width: 100% - 2vh;
+	height: 12vh;
+	min-height: 12vh;
+
+	text-align: center;
+	vertical-align: middle;
+	line-height: 12vh; 
+
+	justify-content: space-between;
+	align-items: flex-start;
+}
+
+.problem-extension {
+	height: 0vh;
+	width: 100%;
+	background-color: rgb(242, 224, 196);
+}
+
+.problem-description {
+	height: 100%;
+	width: 70%;
+	overflow: hidden;
+}
+
+.description {
+	color: rgb(152, 134, 106);
+	margin: -5vh 2vh 2vh 2vh;
+	opacity: 0;
+}
+
+.problem-difficulty {
+	width: 15%;
+	height: 100%;
+	color: rgb(110,140,110);
+	font-size: 2.2vh;
+}
+
+.problem-title {
+	width: 70%;
+	height: 100%;
+}
+
+.title {
+	font-size: 2.3vh;
+	color: rgb(80,80,80);
+	text-align: left;
+	margin-left: 5%;
+}
+
+.problem-record {
+	background-color: rgb(180,180,210);
+	width: 15%;
+	height: 100%;
+	color: rgb(110,110,140);
+	font-size: 2.7vh;
+}
+
+.easy {
+	background-color: rgb(180,210,180);
+}
+
+.medium {
+	background-color: rgb(210,210,150);
+}
+
+.hard {
+	background-color: rgb(210,180,180);
 }
