@@ -16,11 +16,29 @@ function sendToClient(data)
 	res.send(data);
 }
 
+function testSolution(solution,problem)
+{
+	response = tester.testSolution(solution,problem);
+	return response;
+}
+
+function gradeSolution(solution,problem)
+{
+	response = tester.gradeSolution(solution,problem);
+	return response;
+}
+
+function functionizeSolution(solution)
+{
+	var functionIzedSolution = 'function solution_function(n){'+solution+'}';
+	return functionIzedSolution;
+}
+
 //databaseInterface.init();
 //databaseInterface.insertScore('trimbóni','Sort','13337777',isNameTaken);
 
-var fun = 'function tester(text) {abababafsfs console.log(text)}';
-tester.testSolution(fun,'sort');
+var fun = 'n.sort();';
+//gradeSolution(functionizeSolution(fun));
 //var func = eval(fun);
 
 
@@ -32,6 +50,7 @@ router.get('/', function(req, res, next) {
 /* Submit solution */
 router.post('/submit', function(req, res, next) {
 	var solution = req.body.solution;
+	var response = gradeSolution(functionizeSolution(solution));
 	res.send("bla");
 });
 

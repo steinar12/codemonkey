@@ -23,6 +23,10 @@ var databaseInterface = function() {
 
   };
 
+    /**
+   * Setur inn öll upphafsgögn, öll problem og fleira
+   * 
+   */
   self.loadInitialData = function() {
 
      //TEST DATA

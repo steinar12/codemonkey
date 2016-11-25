@@ -85,7 +85,7 @@ function addProblem(problemInfo){
 
 	codeMirrorSubmit.click(function(){
 		var solution = myCodeMirror.getValue();
-
+		submitSolution(solution);
 	});
 
 	problem.hover(function(){
@@ -141,7 +141,7 @@ function newDiv(classList){
 
 function submitSolution(solution){
 	var query = {solution};
-	$.post('/stream', query, function(resp) {
+	$.post('/submit', query, function(resp) {
 		console.log('Solution submitted');
   	});
 }
