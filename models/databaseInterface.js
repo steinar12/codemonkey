@@ -34,42 +34,36 @@ var databaseInterface = function() {
      stmt.run(null,'69','1','1');
   };
 
+  
 
+   /**
+   * Nær í öll score fyrir tiltekið problem
+   * 
+   * @param {problem} strengur sem inniheldur titil á vandamáli
+   *
+   * @callback {isNameTaken} Kallar á deliverScores með öllum stigum sem fundust sem parameter
+   */
 
-  self.getScores = function(problem) {
+  self.getScores = function(problem,deliverScores) {
 
     db.serialize(function() {
 
-      //var selectPlayer = 'SELECT _id from PLAYERS where name = ?'
-      //var selectProblem = 'SELECT _id from PROBLEMS where name  = ?'
-      var statement = 'SELECT score FROM SCORES where SCORES._player_id = (SELECT _id from PLAYERS where PLAYERS.name = ?) AND SCORES._problem_id = (SELECT _id from PROBLEMS where PROBLEMS.title  = ?)';
-      /*var statement2 ='SELECT score FROM SCORES JOIN PLAYERS ON SCORES._player_id = PLAYERS._id'+
-                      ' JOIN PROBLEMS ON SCORES._problem_id = PROBLEM_id WHERE PLAYERS.name = ? AND PROBLEMS.title = ?';*/
-      var statement3 = 'SELECT score FROM SCORES where _player_id = ?';
-      var statement4 = 'SELECT SCORES.scores, PLAYERS.name FROM SCORES JOIN PLAYERS ON PLAYERS._id = SCORES._player_id'+
-                       ' JOIN PROBLEMS._id = SCORES._problem_id WHERE PROBLEMS.title = ?'
+      var statement = 'SELECT score, name FROM SCORES JOIN PLAYERS ON PLAYERS._id = SCORES._player_id'+
+                       ' JOIN PROBLEMS ON PROBLEMS._id = SCORES._problem_id WHERE PROBLEMS.title = ?';
 
 
-      //db.each(statement2, [player,problem], function(err, row) {
-      //db.each(statement3, ['1'], function(err, row) {
       var scores = [];
-      db.each(statement4, [problem], function(err, row) {
-        console.log('score: ' + row.score);
-        console.log(err);
+      db.each(statement, [problem], function(err, row) {
         var score = 
         {
           score : row.score,
-          name : row.name
+          name : row.name,
+          problem : problem,
         };
 
       }, function() {
-          console.log('completed getScores query');
-          //
-          /*db.each('SELECT * FROM SCORES', function(err,row) {
-            console.log('ROW SCORE AFTER COMPLETION: '+ row.score);
-
-          });
-          */
+        deliverScores(scores);
+                  
       });
       
     });
@@ -77,41 +71,73 @@ var databaseInterface = function() {
   };
 
 
-  self.insertScore = function(player,problem,score) {
+
+   /**
+   * Bætir við nýju scorei fyrir tiltekið problem ef ekki er búið að skrá 
+   * það nafn núþegar fyrir problemið
+   * 
+   *
+   * @param {player} strengur sem inniheldur nafn á player
+   * @param {problem} strengur sem inniheldur titil á vandamáli
+   * @param {score} strengur sem inniheldur stig sem playerinn fékk
+   *
+   *
+   * @callback {isNameTaken} Kallar á isNameTaken(true) ef búið var að skrá player, annars isNameTaken(false)
+   */
+  self.insertScore = function(player,problem,score,isNameTaken) {
     db.serialize(function() {
 
+        var players = [];
+        var selectPlayers = 'SELECT name FROM PLAYERS JOIN SCORES ON SCORES._player_id = PLAYERS._id'+
+                            ' JOIN PROBLEMS ON PROBLEMS._id = SCORES._problem_id WHERE PROBLEMS.title = ? AND PLAYERS.name = ?';
+        db.each(selectPlayers, [problem,player], function(err,row) {
+          players.push(row.name);
 
-        var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
-        stmt.run(null,player);
-
-        var selectIds = 'SELECT PLAYERS._id AS player_id, PROBLEMS._id AS problem_id from PLAYERS,PROBLEMS where PLAYERS.name = ? AND PROBLEMS.title = ?'
-        //var selectProblem = 'SELECT _id from PROBLEMS where name  = ?'
-        var statement = 'SELECT score FROM SCORES where SCORES._player_id = (SELECT _id from PLAYERS where PLAYERS.name = ?) AND SCORES._problem_id = (SELECT _id from PROBLEMS where PROBLEMS.title  = ?)';
-        
-        var ids = [];
-        db.each(selectIds, [player,problem], function(err, row) {
-          
-          var id =
-          {
-            player_id : row.player_id,
-            problem_id : row.problem_id,
-          }
-
-          ids.push(id);
-          
-
-        }, function() {           
-            player_id = ids[0].player_id;
-            problem_id = ids[0].problem_id;
-            stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
-            stmt.run(null,score,player_id,problem_id);
+        }, function() {
+            if(players.length > 0) isNameTaken(true);
             
-            /*db.each('SELECT * FROM SCORES', function(err,row) {
-              console.log('ROW SCORE AFTER COMPLETION: '+ row.score);
+            else
+            {
+              isNameTaken(false);
 
-            });*/
+              var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
+              stmt.run(null,player);
+              var selectIds = 'SELECT PLAYERS._id AS player_id, PROBLEMS._id AS problem_id from PLAYERS,PROBLEMS where PLAYERS.name = ? AND PROBLEMS.title = ?'
+                
+              var ids = [];
+              db.each(selectIds, [player,problem], function(err, row) {
+                
+                var id =
+                {
+                  player_id : row.player_id,
+                  problem_id : row.problem_id,
+                }
+
+                ids.push(id);
+                
+
+              }, function() {           
+                  player_id = ids[0].player_id;
+                  problem_id = ids[0].problem_id;
+                  stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
+                  stmt.run(null,score,player_id,problem_id);
+                  db.each('SELECT * FROM SCORES',function(err, row) {
+                    console.log('score: ' + row.score);
+
+                  });
+                  
+                  
+              });
+
+            }
             
+
         });
+
+
+
+
+        
         
       });
   };
