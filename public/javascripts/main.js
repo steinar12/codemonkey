@@ -34,7 +34,6 @@ function addProblem(problemInfo){
 
 	problemSimple.click(function(){
 		var selected = problem.attr('selectedProblem');
-		console.log(solveButton);
 
 		if(selected == 'false'){
 			problem.attr('selectedProblem', 'true');
@@ -49,6 +48,23 @@ function addProblem(problemInfo){
 			problemRecord.animate({marginTop: '0vh', height: '12vh', width: '15%'},300);
 			description.animate({marginTop: '-5vh', opacity: '0'}, 300);
 		}
+	});
+
+	solveButton.click(function(){
+		var scrollTop = $(document).scrollTop();
+		var distFromTop = problem.offset().top;
+		console.log('scrollTop:  ' + scrollTop);
+		console.log('distFromTop:  ' + distFromTop);
+		var fixedPos = distFromTop - scrollTop;
+		var fixedPosString = fixedPos.toString() + "px";
+		console.log(fixedPosString);
+
+		problem.toggleClass('problem-fixed');
+		problem.css('top', fixedPosString);
+		problem.animate({width: '100vw', height: '100vh', top: '0px', left: '0px'}, 500);
+		problemExtension.animate({height: '88vh', backgroundColor: 'rgb(40,40,40)'});
+		problemRecord.animate({height: '88vh', opacity: '0.3'});
+		solveButton.hide();
 	});
 
 	problem.hover(function(){
