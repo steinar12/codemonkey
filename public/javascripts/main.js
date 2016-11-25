@@ -23,7 +23,12 @@ function addProblem(problemInfo){
 	var problemRecord = newDiv(['problem-record']);
 	var title = newDiv(['title']);
 
+	var myCodeMirror;
 	var codeMirrorWrapper = newDiv(['codemirror-wrapper']);
+	var codeMirrorMenuBar = newDiv(['codemirror-menubar']);
+	var codeMirrorSubmit = newDiv(['codemirror-btn', 'codemirror-submit-btn']);
+	codeMirrorSubmit.text('Submit');
+	codeMirrorMenuBar.append(codeMirrorSubmit);
 
 	problemDiff.text(problemInfo.difficulty);
 	title.text(problemInfo.title);
@@ -67,14 +72,20 @@ function addProblem(problemInfo){
 		problem.animate({width: '100vw', height: '100vh', top: '0px', left: '0px'}, 300);
 		problemExtension.animate({height: '88vh', backgroundColor: 'rgb(40,40,40)'});
 
-		var myCodeMirror = CodeMirror(function(elt) {
+		myCodeMirror = CodeMirror(function(elt) {
 			codeMirrorWrapper.append(elt);
+			codeMirrorWrapper.append(codeMirrorMenuBar);
   			problemDescription.hide();
   			problemExtension.append(codeMirrorWrapper);
 		}, {mode:  "javascript", lineNumbers: true, theme: 'night'});
 
 		problemRecord.animate({height: '88vh', opacity: '0.3'});
 		solveButton.hide();
+	});
+
+	codeMirrorSubmit.click(function(){
+		var solution = myCodeMirror.getValue();
+
 	});
 
 	problem.hover(function(){
@@ -126,6 +137,13 @@ function newDiv(classList){
 	}
 
 	return div;
+}
+
+function submitSolution(solution){
+	var query = {solution};
+	$.post('/stream', query, function(resp) {
+		console.log('Solution submitted');
+  	});
 }
 
 // Temporary database.

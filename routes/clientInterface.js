@@ -29,4 +29,10 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+/* Submit solution */
+router.post('/submit', function(req, res, next) {
+	var solution = req.body.solution;
+	res.send("bla");
+});
+
 module.exports = router;

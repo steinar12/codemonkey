@@ -80,6 +80,23 @@ html, body {
 	height: 100%;
 }
 
+.codemirror-menubar {
+	width: 100%;
+	height: 10%;
+	background-color: rgb(50,50,50);
+}
+
+.codemirror-btn {
+	width: 10%;
+	height: 100%;
+	background-color: rgb(70,70,70);
+
+	text-align: center;
+	vertical-align: middle;
+	line-height: 9vh;
+	color: white;
+}
+
 .solve-button {
 	background-color: rgb(218, 202, 176);
 	width: 20%;
