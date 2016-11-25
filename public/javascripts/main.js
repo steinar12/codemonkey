@@ -1,9 +1,12 @@
 $(document).ready(function(){
+	// Add in all the problem elements
 	for(var i = 0; i < problems.length; i++){
 		addProblem(problems[i]);
 	}
 });
 
+// Creates and returns a problem html element based on the problemInfo parameter.
+// problemInfo: {difficulty: 'Easy', title: 'Red riding hood', record: '43ms'};
 function addProblem(problemInfo){
 
 	var problem = newDiv(['problem']);
@@ -20,6 +23,8 @@ function addProblem(problemInfo){
 	var problemRecord = newDiv(['problem-record']);
 	var title = newDiv(['title']);
 
+	var codeMirrorWrapper = newDiv(['codemirror-wrapper']);
+
 	problemDiff.text(problemInfo.difficulty);
 	title.text(problemInfo.title);
 	problemRecord.text(problemInfo.record);
@@ -34,35 +39,40 @@ function addProblem(problemInfo){
 
 	problemSimple.click(function(){
 		var selected = problem.attr('selectedProblem');
+		var duration = 300;
 
 		if(selected == 'false'){
 			problem.attr('selectedProblem', 'true');
-			problem.animate({opacity: '1'},300);
-			problemExtension.animate({height: '55vh'},300);
-			problemRecord.animate({marginTop: '12vh', height: '55vh', width: '50%'},300);
-			description.animate({marginTop: '2vh', opacity: '1'}, 300);
+			problem.animate({opacity: '1'},duration);
+			problemExtension.animate({height: '55vh'},duration);
+			problemRecord.animate({marginTop: '12vh', height: '55vh', width: '25vw'},duration);
+			description.animate({marginTop: '2vh', opacity: '1'}, duration);
 		} else {
 			problem.attr('selectedProblem', 'false');
-			problem.animate({opacity: '0.7'},300);
-			problemExtension.animate({height: '0vh'},300);
-			problemRecord.animate({marginTop: '0vh', height: '12vh', width: '15%'},300);
-			description.animate({marginTop: '-5vh', opacity: '0'}, 300);
+			problem.animate({opacity: '0.7'},duration);
+			problemExtension.animate({height: '0vh'},duration);
+			problemRecord.animate({marginTop: '0vh', height: '12vh', width: '15%'},duration);
+			description.animate({marginTop: '-5vh', opacity: '0'}, duration);
 		}
 	});
 
 	solveButton.click(function(){
 		var scrollTop = $(document).scrollTop();
 		var distFromTop = problem.offset().top;
-		console.log('scrollTop:  ' + scrollTop);
-		console.log('distFromTop:  ' + distFromTop);
 		var fixedPos = distFromTop - scrollTop;
 		var fixedPosString = fixedPos.toString() + "px";
-		console.log(fixedPosString);
 
 		problem.toggleClass('problem-fixed');
 		problem.css('top', fixedPosString);
-		problem.animate({width: '100vw', height: '100vh', top: '0px', left: '0px'}, 500);
+		problem.animate({width: '100vw', height: '100vh', top: '0px', left: '0px'}, 300);
 		problemExtension.animate({height: '88vh', backgroundColor: 'rgb(40,40,40)'});
+
+		var myCodeMirror = CodeMirror(function(elt) {
+			codeMirrorWrapper.append(elt);
+  			problemDescription.hide();
+  			problemExtension.append(codeMirrorWrapper);
+		}, {mode:  "javascript", lineNumbers: true, theme: 'night'});
+
 		problemRecord.animate({height: '88vh', opacity: '0.3'});
 		solveButton.hide();
 	});
@@ -85,6 +95,29 @@ function addProblem(problemInfo){
 	$('.problem-container').append(problem);
 }
 
+// Created and returns a highscore table element based on the highscoreInfo parameter.
+// highscoreInfo: [ {name: 'tom', score: '43'}, {...}, ... ];
+/*function addHighscoreTable(highscoreInfo){
+
+	// The wrapper
+	var wrapper = newDiv(['hst-wrapper']);
+
+	// Create 10 lines in the table
+	for(var i = 0; i < 10; i++){
+
+		//var number = 
+		//var placement = newDiv().text(i+1;
+		var name = newDiv().text(highscoreInfo.name);
+		var score = newDiv().text(highscoreInfo.time);
+
+		var line = newDiv(['hs-line']);
+
+		line.append()
+
+	}
+}*/
+
+// Returns a new jquery div element with all the classes in classList.
 function newDiv(classList){
 	var div = $('<div></div>');
 
@@ -95,6 +128,7 @@ function newDiv(classList){
 	return div;
 }
 
+// Temporary database.
 var problems = [
 	{
 		difficulty: 'Easy',

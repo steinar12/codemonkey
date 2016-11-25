@@ -65,14 +65,19 @@ html, body {
 }
 
 .problem-description {
-	height: 85%;
 	width: 60%;
+	height: 85%;
 }
 
 .description {
 	color: rgb(152, 134, 106);
 	margin: -5vh 2vh 2vh 2vh;
 	opacity: 0;
+}
+
+.codemirror-wrapper {
+	width: 77.6%;
+	height: 100%;
 }
 
 .solve-button {
