@@ -32,10 +32,22 @@ var databaseInterface = function() {
      //TEST DATA
      var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
      stmt.run(null,'Siggi');
+     stmt.run(null,'Kalli');
+     stmt.run(null,'Tralli');
+     stmt.run(null,'Fralli');
+     stmt.run(null,'Dalli');
+     stmt.run(null,'Palli');
+
      stmt = db.prepare('INSERT INTO PROBLEMS VALUES (?,?,?,?)');
-     stmt.run(null,'Sort','Sort unsorted array','Easy');
+     stmt.run(null,'primefactors','return an array containing the prime factors of n in ascending order','Easy');
      stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
      stmt.run(null,'69','1','1');
+     stmt.run(null,'1','2','1');
+     stmt.run(null,'5','3','1');
+     stmt.run(null,'2','4','1');
+     stmt.run(null,'10','5','1');
+     stmt.run(null,'3','6','1');
+
   };
 
   
@@ -45,7 +57,7 @@ var databaseInterface = function() {
    * 
    * @param {problem} strengur sem inniheldur titil á vandamáli
    *
-   * @callback {isNameTaken} Kallar á deliverScores með öllum stigum sem fundust sem parameter
+   * @callback {deliverScores} Kallar á deliverScores með öllum stigum sem fundust sem parameter
    */
 
   self.getScores = function(problem,deliverScores) {
@@ -64,8 +76,10 @@ var databaseInterface = function() {
           name : row.name,
           problem : problem,
         };
+        scores.push(score);
 
       }, function() {
+        console.log('length of scores after finishing sql: ' + scores.length);
         deliverScores(scores);
                   
       });
