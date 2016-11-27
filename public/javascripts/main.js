@@ -273,9 +273,10 @@ function addCorrectAnswerPopup(problem, problemInfo, response){
 	var popupExitButton = newImg(['popup-exit-button'], "http://totravelistolearn.in/wp-content/themes/travel/images/cross-512.png");
 
 	popupSubmitButton.click(function(){
-		console.log('popupInput: ' + popupInput.value);
+		console.log('popupInput: ');
+		console.log(popupInput[0].value);
 		console.log(problemInfo);
-		submitScore(popupInput.value, problemInfo);
+		submitScore(popupInput[0].value, problemInfo);
 		problem.replaceWith(addProblem(problemInfo, true));	
 		$('body').css('overflow', 'auto');
 	});
