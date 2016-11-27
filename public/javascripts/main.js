@@ -209,8 +209,7 @@ function generateHSTable(highscores){
 }
 
 function submitSolution(solution, problem, problemTitle, writeToConsole){
-	var submission = {solution: solution, title: problemTitle};
-	var query = {submission};
+	var query = {solution: solution, title: problemTitle};
 	$.post('/submit', query, function(resp) {
 		console.log('Solution submitted');
 		console.log(resp);

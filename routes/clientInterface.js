@@ -188,9 +188,8 @@ router.post('/submit', function(req, res, next) {
 		res.send(response);
 	}
 
-	var submission = req.body.submission;
-	var solution = submission.solution;
-	var problem = submission.title;
+	var solution = req.body.solution;
+	var problem = req.body.title;
 	var id = req.session.id;
 	console.log('solution');
 	console.log(solution);
