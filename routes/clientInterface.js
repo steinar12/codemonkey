@@ -6,7 +6,7 @@ var testerModule = require('../models/tester');
 var tester = new testerModule();
 var databaseInterface = new databaseInterfaceModule();
 databaseInterface.init();
-
+var problems_with_scores = [];
 
 function submitScore(player,problem,score,isNameTaken)
 {
@@ -20,6 +20,7 @@ function isNameTaken(taken)
 
 function sendToClient(response)
 {
+	console.log('SENDING TO CLIENT');
 	console.log(response);
 	//res.send(response);
 }
@@ -43,47 +44,50 @@ function gradeSolution(solution,problem,sendToClient)
 }
 
 function loadProblems()
-{
-	var problems_with_scores = [];
-
-	function addHighscoreToProblem(problem,scores)
-	{
-		scores.sort();
-		scores.reverse();
-		for(var i = 0; i<scores.length; i++)
-		{
-			if(i >= 10) return;
-			score = 
-			{
-				rank : (i+1),
-				name : scores[i].name,
-				rank : scores[i].rank,
-			}
-			problem.highscores.push(score);
-		}
-		problems_with_scores.push(problem);
-	}
+{	
+	problems_with_scores = [];
 
 	function deliverProblems(problems)
 	{
-		for(var i = 0; i<problems.length; i++)
+		
+		function addHighscoreToProblem(scores,problem,original_problems)
 		{
-
+			scores.sort(function(a,b) {
+	    		return b.score - a.score;
+	  		});
+			//scores.reverse();
+			for(var i = 0; i<scores.length; i++)
+			{
+				if(i >= 10) return;
+				score = 
+				{
+					rank : (i+1),
+					name : scores[i].name,
+					score : scores[i].score,
+				}
+				problem.highscores.push(score);
+			}
+			problems_with_scores.push(problem);
+			if(problem.id >= original_problems.length) sendToClient(problems_with_scores);
 		}
 
-		databaseInterface.getScores(problem,addHighscoreToProblem);
+		for(var i = 0; i<problems.length; i++)
+		{
+			databaseInterface.getHighScores(problems[i],addHighscoreToProblem,problems);
+		}		
 
 	}
+
+	databaseInterface.getProblems(deliverProblems);	
 }
 
 
 
 function determineRank(score,problem,sendToClient)
 {
-	function createResponse(scores)
+	function createResponse(scores,problem)
 	{
-		console.log('length of scores: '+scores.length);
-		problem_scores = [];
+		var problem_scores = [];
 		for(var i = 0; i<scores.length; i++)
 		{
 			problem_scores.push(scores.score);
@@ -95,14 +99,18 @@ function determineRank(score,problem,sendToClient)
 			score : score,
 		}
 
-		scores.sort();
-		scores.reverse();
+		scores.sort(function(a,b) {
+    		return b.score - a.score;
+  		});
+		//scores.reverse();
 		for(var i = 0; i<scores.length; i++)
 		{
-			if(score > scores[i])
+			
+			if(score > scores[i].score)
 			{
 				response.message = 'You are ranked number '+(i+1)+' out of '+(scores.length+1)+' players';
 				sendToClient(response);
+				return;
 			}
 		}
 
@@ -128,7 +136,8 @@ var fun = 'return [2,2,23,149];';
 
 
 var problem = 'primefactors';
-gradeSolution(functionizeSolution(fun),problem,sendToClient);
+//gradeSolution(functionizeSolution(fun),problem,sendToClient);
+loadProblems();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

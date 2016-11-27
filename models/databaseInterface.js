@@ -52,7 +52,39 @@ var databaseInterface = function() {
 
   };
 
+    self.getHighScores = function(problem,deliverScores,problems) {
+
+    var problemString = '';
+
+    db.serialize(function() {
+      
+      var statement = 'SELECT score, name FROM SCORES JOIN PLAYERS ON PLAYERS._id = SCORES._player_id'+
+                       ' JOIN PROBLEMS ON PROBLEMS._id = SCORES._problem_id WHERE PROBLEMS.title = ?';
+
+
+      if (typeof problem === 'string') problemString = problem;
+      else problemString = problem.title;
+      var scores = [];
+      db.each(statement, [problemString], function(err, row) {
+        var score = 
+        {
+          score : row.score,
+          name : row.name,
+          problem : problem,
+        };
+        scores.push(score);
+
+      }, function() {
+        deliverScores(scores,problem,problems);
+       
+                  
+      });
+      
+    });
+
+  };
   
+
 
    /**
    * Nær í öll score fyrir tiltekið problem
@@ -64,15 +96,18 @@ var databaseInterface = function() {
 
   self.getScores = function(problem,deliverScores) {
 
-    db.serialize(function() {
-      console.log('problem in getScores: ' + problem);
+    var problemString = '';
 
+    db.serialize(function() {
+      
       var statement = 'SELECT score, name FROM SCORES JOIN PLAYERS ON PLAYERS._id = SCORES._player_id'+
                        ' JOIN PROBLEMS ON PROBLEMS._id = SCORES._problem_id WHERE PROBLEMS.title = ?';
 
 
+      if (typeof problem === 'string') problemString = problem;
+      else problemString = problem.title;
       var scores = [];
-      db.each(statement, [problem], function(err, row) {
+      db.each(statement, [problemString], function(err, row) {
         var score = 
         {
           score : row.score,
@@ -82,7 +117,7 @@ var databaseInterface = function() {
         scores.push(score);
 
       }, function() {
-        deliverScores(scores);
+        deliverScores(scores,problem);
        
                   
       });
@@ -94,9 +129,9 @@ var databaseInterface = function() {
   self.getProblems = function(deliverProblems){
 
      db.serialize(function() {
-      console.log('problem in getScores: ' + problem);
-
+      
       var problems = [];
+      var statement = 'SELECT * FROM PROBLEMS';
       db.each(statement, function(err, row) {
         var problem = {
           id : row._id,
