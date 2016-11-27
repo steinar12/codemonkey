@@ -1,8 +1,6 @@
 $(document).ready(function(){
 	// Add in all the problem elements
-	for(var i = 0; i < problems.length; i++){
-		addProblem(problems[i]);
-	}
+	loadProblems();
 });
 
 // Creates and returns a problem html element based on the problemInfo parameter.
@@ -36,15 +34,14 @@ function addProblem(problemInfo, replace){
 	var codeMirrorWrapper = newDiv(['codemirror-wrapper']);
 	var codeMirrorMenuBar = newDiv(['codemirror-menubar']);
 	var codeMirrorSubmit = newDiv(['codemirror-btn', 'codemirror-submit-btn']);
-	var codeMirrorTest = newDiv(['codemirror-btn', 'codemirror-test-btn']);
 	codeMirrorSubmit.text('Submit');
-	codeMirrorTest.text('Test code');
 	codeMirrorMenuBar.append(codeMirrorSubmit);
-	codeMirrorMenuBar.append(codeMirrorTest);
 
 	problemDiff.text(problemInfo.difficulty);
 	title.text(problemInfo.title);
-	record.text(problemInfo.highscores[0].score + "ms");
+	console.log(problemInfo);
+	if(problemInfo.highscores[0]) record.text(problemInfo.highscores[0].score + "ms");
+	else record.text("Unsolved");
 	problemRecord.append(record);
 	problemRecord.append(hsTable);
 	problemRecord.append(myConsole);
@@ -125,7 +122,7 @@ function addProblem(problemInfo, replace){
 	codeMirrorSubmit.click(function(){
 		var solution = myCodeMirror.getValue();
 		console.log("Submit button clicked!");
-		submitSolution(solution, problem, problemInfo.title, writeToConsole);
+		runSolution(solution, problem, problemInfo, writeToConsole);
 	});
 
 	exitButton.click(function(){
@@ -174,7 +171,7 @@ function newDiv(classList){
 
 // Returns a new jquery img element with all the classes in classList.
 function newImg(classList, src){
-	var img = $('<img></img>');
+	var img = $('<img></input>');
 	img.attr('src', src);
 
 	for(var i = 0; i < classList.length; i++){
@@ -182,6 +179,18 @@ function newImg(classList, src){
 	}
 
 	return img;
+}
+
+// Returns a new jquery input element with all the classes in classList.
+function newInput(classList, placeholder){
+	var input = $('<input></img>');
+	input.attr('placeholder', placeholder);
+
+	for(var i = 0; i < classList.length; i++){
+		input.addClass(classList[i]);
+	}
+
+	return input;
 }
 
 function generateHSTable(highscores){
@@ -203,123 +212,95 @@ function generateHSTable(highscores){
 		row.append(name);
 		row.append(score);
 
-		hsTable.prepend(row);
+		hsTable.append(row);
 	}
 	return hsTable;
 }
 
-function submitSolution(solution, problem, problemTitle, writeToConsole){
-	var query = {solution: solution, title: problemTitle};
+function runSolution(solution, problem, problemInfo, writeToConsole){
+	var query = {solution: solution, title: problemInfo.title};
 	$.post('/submit', query, function(resp) {
 		console.log('Solution submitted');
 		console.log(resp);
-		handleResponse(resp, problem, writeToConsole);
+		handleResponse(resp, problem, problemInfo, writeToConsole);
   	});
 }
 
-function handleResponse(response, problem, writeToConsole){
+function submitScore(playerName, problemInfo){
+	var query = {name: playerName, problem: problemInfo.title};
+	$.post('/submit', query, function(resp) {
+		console.log('Score submitted');
+		console.log(resp);
+
+		//handleResponse(resp, problem, problemTitle, writeToConsole);
+  	});
+}
+
+function handleResponse(response, problem, problemInfo, writeToConsole){
+
+	// Ef að svarið er rétt, þá birtum við scorið
+	if(response.type === "Rank") {
+		writeToConsole("Correct!");
+		addCorrectAnswerPopup(problem, problemInfo, response);
+	}
 
 	// Byrjum á að skrifa skilaboðin í console
 	var consoleMessage = response.type + ":  " + response.message;
 	writeToConsole(consoleMessage);
-
-	// Ef að svarið er rétt, þá birtum við scorið
-	if(response.type === "Score") {
-
-	}
 }
 
-// Temporary database.
-var description = 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies! This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
-var problems = [
-	{
-		difficulty: 'Easy',
-		title: 'The traveling salesman',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}],
-		description: description
-	},
-	{
-		difficulty: 'Easy',
-		title: 'Snow white and the huntsman',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Easy',
-		title: 'Trouble in paradise',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Easy',
-		title: 'One million grasshoppers',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Easy',
-		title: 'Romeo is looking for a lover',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Medium',
-		title: 'Trees in a graveyard',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Medium',
-		title: 'Banking gone wrong',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Medium',
-		title: 'Cowboys and wizards',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Medium',
-		title: 'Which soup is the coldest?',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Medium',
-		title: 'Love and racketball',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Hard',
-		title: 'Prince of Russia',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Hard',
-		title: 'Three golden coins and a goat',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Hard',
-		title: 'Day at the zoo',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Hard',
-		title: 'Counting raindrops',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
-	},
-	{
-		difficulty: 'Hard',
-		title: 'Circus of death',
-		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: description
+function addCorrectAnswerPopup(problem, problemInfo, response){
+	var popupWrapper = newDiv(['popup-wrapper']);
+	var popupBackground = newDiv(['popup-background']);
+	var popup = newDiv(['popup']);
+	var popupTitle = newDiv(['popup-title']);
+	popupTitle.text('Correct!');
+	var popupScore = newDiv(['popup-text']);
+	popupScore.text("Your score:        " + response.score);
+	var popupRank = newDiv(['popup-text']);
+	popupRank.text(response.message);
+	var popupSubmitText = newDiv(['popup-text']);
+	popupSubmitText.text("Type in your name and submit your score!");
+	var popupInput = newInput(['popup-input'], 'Your name');
+	var popupSubmitButton = newDiv(['popup-submit-button']);
+	popupSubmitButton.text('Submit');
+	var popupExitButton = newImg(['popup-exit-button'], "http://totravelistolearn.in/wp-content/themes/travel/images/cross-512.png");
+
+	popupSubmitButton.click(function(){
+		submitScore(popupInput.value, problemInfo.title);
+		problem.replaceWith(addProblem(problemInfo, true));	
+		$('body').css('overflow', 'auto');
+	});
+
+	popupExitButton.click(function(){
+		popupWrapper.remove();
+	});
+
+	popup.append(popupTitle);
+	popup.append(popupScore);
+	popup.append(popupRank);
+	popup.append(popupSubmitText);
+	popup.append(popupInput);
+	popup.append(popupSubmitButton);
+	popup.append(popupExitButton);
+	popupWrapper.append(popupBackground);
+	popupWrapper.append(popup);
+	problem.append(popupWrapper);
+}
+
+function loadProblems(){
+  $.ajax({
+    type: 'GET',
+    url: 'http://localhost:3000/loadProblems',
+    'success': function(response) {
+    	console.log(response);
+        insertProblems(response);
+    }
+  });
+}
+
+function insertProblems(problems){
+	for(var i = 0; i < problems.length; i++){
+		addProblem(problems[i]);
 	}
-]
+}

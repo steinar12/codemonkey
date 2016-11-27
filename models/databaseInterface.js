@@ -40,7 +40,10 @@ var databaseInterface = function() {
      stmt.run(null,'Palli');
 
      stmt = db.prepare('INSERT INTO PROBLEMS VALUES (?,?,?,?)');
-     stmt.run(null,'primefactors','return an array containing the prime factors of n in ascending order','Easy');
+     stmt.run(null,'Primefactors','Return an array containing the prime factors of n in ascending order','Easy');
+     for(var i = 0; i < problemss.length; i++){
+       stmt.run(null, problemss[i].title, problemss[i].description, problemss[i].difficulty);
+     }
 
      stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
      stmt.run(null,'69','1','1');
@@ -49,6 +52,16 @@ var databaseInterface = function() {
      stmt.run(null,'2','4','1');
      stmt.run(null,'10','5','1');
      stmt.run(null,'3','6','1');
+     console.log(problemss.length);
+     for(var i = 0; i < problemss.length; i++){
+        for(var n = 0; n < problemss[i].highscores.length; n++){
+          var hsInfo = problemss[i].highscores[n];
+          //console.log("name:  " + hsInfo.name);
+          //console.log("title:  " + problemss[i].title);
+          //console.log("score:  " + hsInfo.score);
+          this.insertScore(hsInfo.name, problemss[i].title, hsInfo.score);
+        }
+     }
 
   };
 
@@ -164,39 +177,39 @@ var databaseInterface = function() {
   self.insertScore = function(player,problem,score) {
     db.serialize(function() {
 
-        var players = [];
-        var selectPlayers = 'SELECT name FROM PLAYERS JOIN SCORES ON SCORES._player_id = PLAYERS._id'+
-                            ' JOIN PROBLEMS ON PROBLEMS._id = SCORES._problem_id WHERE PROBLEMS.title = ? AND PLAYERS.name = ?';
-        db.each(selectPlayers, [problem,player], function(err,row) {
-          players.push(row.name);
+        /*db.each('SELECT * FROM PROBLEMS', function(err,row) {
+          console.log('row from problems');
+          console.log('title number'+row._id+': '+row.title);
+        });*/
 
-        }, function() {
 
               var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
               stmt.run(null,player);
+              console.log('inserted player: ' + player);
               var selectIds = 'SELECT PLAYERS._id AS player_id, PROBLEMS._id AS problem_id from PLAYERS,PROBLEMS where PLAYERS.name = ? AND PROBLEMS.title = ?'
                 
               var ids = [];
               db.each(selectIds, [player,problem], function(err, row) {
-                
+                console.log(1);
+                console.log('here is row');
+                console.log(row);
                 var id =
                 {
                   player_id : row.player_id,
                   problem_id : row.problem_id,
                 }
+                console.log(2);
 
                 ids.push(id);
                 
 
-              }, function() {           
+              }, function() {
+                  console.log(3);   
                   player_id = ids[0].player_id;
+                  console.log(4);
                   problem_id = ids[0].problem_id;
                   stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
-                  stmt.run(null,score,player_id,problem_id);        
-                  db.each('SELECT * FROM SCORES',function(err, row) {
-                    console.log('score: ' + row.score);
-
-                  });
+                  stmt.run(null,score,player_id,problem_id);                    
                   
                   
               });
@@ -209,13 +222,101 @@ var databaseInterface = function() {
 
 
 
-        
-        
-      });
   };
 
-
-  
+  var description = 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies! This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+  var problemss = [
+  {
+    difficulty: 'Easy',
+    title: 'The traveling salesman',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}],
+    description: description
+  },
+  {
+    difficulty: 'Easy',
+    title: 'Snow white and the huntsman',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Easy',
+    title: 'Trouble in paradise',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Easy',
+    title: 'One million grasshoppers',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Easy',
+    title: 'Romeo is looking for a lover',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Medium',
+    title: 'Trees in a graveyard',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Medium',
+    title: 'Banking gone wrong',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Medium',
+    title: 'Cowboys and wizards',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Medium',
+    title: 'Which soup is the coldest?',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Medium',
+    title: 'Love and racketball',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Hard',
+    title: 'Prince of Russia',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Hard',
+    title: 'Three golden coins and a goat',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Hard',
+    title: 'Day at the zoo',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Hard',
+    title: 'Counting raindrops',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Hard',
+    title: 'Circus of death',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  }
+]
 
 
 

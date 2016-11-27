@@ -8,25 +8,15 @@ var databaseInterface = new databaseInterfaceModule();
 databaseInterface.init();
 var problems_with_scores = [];
 var unregistered_scores = [];
-var testScore = 
-{
-	id : '69',
-    score : '1337',
-    problem : 'primefactors',
-}
-unregistered_scores.push(testScore);
-
 
 function submitScore(player,problem,score,sendToClient,id)
 {
 	var matchedScore = false;
-	var matchedIndex = -1;
 	for(var i = 0; i<unregistered_scores.length; i++)
 	{
 		if(id === unregistered_scores[i].id && problem === unregistered_scores[i].problem && score === unregistered_scores[i].score)
 		{
-			matchedScore = true;
-			matchedIndex = i;
+			matchedScore = true;			
 		}
 	}
 
@@ -35,15 +25,20 @@ function submitScore(player,problem,score,sendToClient,id)
 		sendToClient('Nice try cheater');
 		return;
 	}
-	
-	if(matchedIndex !== -1)
+
+	function isNameTaken(taken)
 	{
-		unregistered_scores.splice(matchedIndex,1);
-		databaseInterface.insertScore(player,problem,score);
-		sendToClient('Success');
-	}	
-	
-	else sendToClient('Failure');	
+		if(taken) {
+			sendToClient('Name is taken');
+		}
+		else {
+			sendToClient('Name is not taken');
+		}
+		sendToClient(taken);
+	}
+
+	databaseInterface.insert(player,problem,score,isNameTaken);
+
 }
 
 function gradeSolution(solution,problem,sendToClient,id)
@@ -88,7 +83,7 @@ function determineRank(score,problem,sendToClient)
 		}
 		var response =
 		{
-			type : 'rank',
+			type : 'Rank',
 			message : '',
 			score : score,
 		}
@@ -123,7 +118,6 @@ function loadProblems(sendToClient)
 
 	function deliverProblems(problems)
 	{
-		
 		function addHighscoreToProblem(scores,problem,original_problems)
 		{
 			scores.sort(function(a,b) {
@@ -162,36 +156,19 @@ function functionizeSolution(solution)
 }
 
 
-function sendToClient(response)
+/*	function sendToClient(response)
 	{
 		console.log('SENDING TO CLIENT');
 		console.log(response);
 		//res.send(response);
 	}
 
-var fun = '';
+var fun = '';*/
 
 
-var problem = 'primefactors';
-gradeSolution(functionizeSolution(fun),problem,sendToClient);
+//var problem = 'primefactors';
+//gradeSolution(functionizeSolution(fun),problem,sendToClient);
 //loadProblems();
-/*function sendToClient(response)
-	{
-		console.log('SENDING TO CLIENT');
-		console.log(response);
-		console.log('length of unregistered responses: ' +unregistered_scores.length);
-		//res.send(response);
-	}*/
-
-/*var testScore = 
-{
-	id : '69',
-    score : '1337',
-    problem : 'primefactors',
-}*/
-
-//submitScore('Tingó','primefactors','1500',sendToClient,'69');
-
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -206,15 +183,13 @@ router.post('/submit', function(req, res, next) {
 	function sendToClient(response)
 	{
 		console.log('SENDING TO CLIENT');
-		console.log(response);
 		res.send(response);
 	}
 
 	var solution = req.body.solution;
-	var problem = req.body.title;
+	//var problem = req.body.title;
+	var problem = 'primefactors';
 	var id = req.session.id;
-	console.log('solution');
-	console.log(solution);
 	gradeSolution(functionizeSolution(solution),problem,sendToClient,id);
 });
 
@@ -232,7 +207,6 @@ router.get('/loadProblems', function(req, res, next) {
 	function sendToClient(response)
 	{
 		console.log('SENDING TO CLIENT');
-		console.log(response);
 		res.send(response);
 	}
 

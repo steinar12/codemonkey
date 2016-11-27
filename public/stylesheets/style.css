@@ -242,3 +242,82 @@ html, body {
 	background-color: rgb(210,180,180);
 	margin-top: 5vh;
 }
+
+.popup-wrapper {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100vw;
+	height: 100vh;
+	z-index: 10000;
+}
+
+.popup-background {
+	width: 100%;
+	height: 100%;
+	background-color: rgb(40,40,40);
+	opacity: 0.5;
+}
+
+.popup {
+	position: fixed;
+	top: 30%;
+	left: 35%;
+	width: 30%;
+	height: 40%;
+	background-color: white;
+	opacity: 1;
+
+	text-align: center;
+	vertical-align: middle;  
+}
+
+.popup-title {
+	height: 30%;
+	font-size: 6.5vh;
+	background-color: rgb(120,180,120);
+	color: white;
+	line-height: 12vh;
+}
+
+.popup-text {
+	height: 12%;
+	font-size: 2.2vh;
+	color: black;
+	line-height: 5.538vh;
+}
+
+.popup-input {
+	width: 50%;
+	height: 9%;
+	padding-left: 2%;
+	margin-top: 1%;
+}
+
+.popup-submit-button {
+	width: 25%;
+	height: 12%;
+	margin-top: 1.5%;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: rgb(90,90,180);
+	color: white;
+	line-height: 4.8vh;
+}
+
+.popup-submit-button:hover {
+	opacity: 0.8;
+}
+
+.popup-exit-button {
+	position: fixed;
+	top: 31.2vh;
+	left: 62.9vw;
+	width: 1.3vw;
+	height: 1.3vw;
+	opacity: 0.4;
+}
+
+.popup-exit-button:hover {
+	opacity: 0.6;
+}
