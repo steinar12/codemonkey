@@ -94,7 +94,7 @@ var tester = function() {
   {
     
     switch(problem) {
-        case 'primefactors':
+        case 'Primefactors':
             {
 
             var hrstart = process.hrtime();
@@ -131,7 +131,7 @@ var tester = function() {
   {    
 
     switch(problem) {
-        case 'primefactors':
+        case 'Primefactors':
             {
               var solutionIsCorrect;
               var solution_res = solution_function(primefactors_param);

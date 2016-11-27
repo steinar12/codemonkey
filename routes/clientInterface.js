@@ -11,13 +11,22 @@ var unregistered_scores = [];
 
 function submitScore(player,problem,sendToClient,id)
 {
-	console.log('called submitScore');
+	console.log('called submitScore function');
 	var matchedScore = false;
 	var score = '';
 	for(var i = 0; i<unregistered_scores.length; i++)
 	{
-		if(id === unregistered_scores[i].id && problem === unregistered_scores[i].problem && score === unregistered_scores[i].score)
+		console.log(unregistered_scores);
+		console.log('problem: ' + problem);
+		console.log(id === unregistered_scores[i].id);
+		console.log(problem === unregistered_scores[i].problem);
+		console.log(score === unregistered_scores[i].score);
+		console.log('score sem ég tek inn: ' + score);
+		console.log('score sem er til fyrir: ' + unregistered_scores[i].score);
+
+		if(id === unregistered_scores[i].id && problem === unregistered_scores[i].problem)
 		{
+			console.log('found matched score!!!!');
 			matchedScore = true;
 			score = unregistered_scores[i].score;
 
@@ -30,7 +39,7 @@ function submitScore(player,problem,sendToClient,id)
 		return;
 	}
 
-	databaseInterface.insert(player,problem,score);
+	databaseInterface.insertScore(player,problem,score);
 
 }
 
@@ -53,6 +62,7 @@ function gradeSolution(solution,problem,sendToClient,id)
          			score : response.message,
          			problem : problem,
          		}
+         		console.log('pushing score into array');
          		unregistered_scores.push(unregistered_score);
          		determineRank(response.message,problem,sendToClient);
 
@@ -180,10 +190,13 @@ router.post('/submit', function(req, res, next) {
 	}
 
 	var solution = req.body.solution;
-	//var problem = req.body.title;
-	var problem = 'primefactors';
+	var problem = req.body.title;
+	console.log(req.body);
+	console.log('problem: ' + problem);
 	var id = req.session.id;
+	console.log('session id in submit: ' + id);
 	gradeSolution(functionizeSolution(solution),problem,sendToClient,id);
+
 });
 
 router.post('/submitScore', function(req, res, next) {
@@ -198,6 +211,7 @@ router.post('/submitScore', function(req, res, next) {
 	var problem = req.body.problem;
 	console.log(req.body);
 	var id = req.session.id;
+	console.log('session id in submitScore: ' + id);
 	
 	submitScore(playerName,problem,sendToClient,id);
 	
