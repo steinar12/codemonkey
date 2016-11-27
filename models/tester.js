@@ -21,7 +21,7 @@ var tester = function() {
       eval(solution);
 
 
-      //solution_function(500);
+      solution_function(500);
      
       return 'No errors were found';
     }
