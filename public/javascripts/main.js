@@ -62,7 +62,7 @@ function addProblem(problemInfo, replace){
 		if(problem.attr('editorMode') == 'true') return;
 
 		var selected = problem.attr('selectedProblem');
-		var duration = 300;
+		var duration = 400;
 
 		if(selected == 'false'){
 			problem.attr('selectedProblem', 'true');
@@ -88,7 +88,7 @@ function addProblem(problemInfo, replace){
 	});
 
 	solveButton.click(function(){
-		var duration = 400;
+		var duration = 600;
 		var scrollTop = $(document).scrollTop();
 		var distFromTop = problem.offset().top;
 		var fixedPos = distFromTop - scrollTop;
@@ -156,31 +156,9 @@ function addProblem(problemInfo, replace){
 	writeToConsole("console texti");
 	writeToConsole("fuck niggers");
 
-	if(replace) return problem;
+	if(replace) return problem.hide().fadeIn(1200);
 	else $('.problem-container').append(problem);
 }
-
-// Created and returns a highscore table element based on the highscoreInfo parameter.
-// highscoreInfo: [ {name: 'tom', score: '43'}, {...}, ... ];
-/*function addHighscoreTable(highscoreInfo){
-
-	// The wrapper
-	var wrapper = newDiv(['hst-wrapper']);
-
-	// Create 10 lines in the table
-	for(var i = 0; i < 10; i++){
-
-		//var number = 
-		//var placement = newDiv().text(i+1;
-		var name = newDiv().text(highscoreInfo.name);
-		var score = newDiv().text(highscoreInfo.time);
-
-		var line = newDiv(['hs-line']);
-
-		line.append()
-
-	}
-}*/
 
 // Returns a new jquery div element with all the classes in classList.
 function newDiv(classList){
@@ -233,99 +211,106 @@ function submitSolution(solution){
 	var query = {solution};
 	$.post('/submit', query, function(resp) {
 		console.log('Solution submitted');
+		console.log(resp);
+		handleResponse(resp);
   	});
 }
 
+function handleResponse(response){
+
+}
+
 // Temporary database.
+var description = 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies! This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
 var problems = [
 	{
 		difficulty: 'Easy',
 		title: 'The traveling salesman',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Easy',
 		title: 'Snow white and the huntsman',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Easy',
 		title: 'Trouble in paradise',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Easy',
 		title: 'One million grasshoppers',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Easy',
 		title: 'Romeo is looking for a lover',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Medium',
 		title: 'Trees in a graveyard',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Medium',
 		title: 'Banking gone wrong',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Medium',
 		title: 'Cowboys and wizards',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Medium',
 		title: 'Which soup is the coldest?',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Medium',
 		title: 'Love and racketball',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Hard',
 		title: 'Prince of Russia',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Hard',
 		title: 'Three golden coins and a goat',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Hard',
 		title: 'Day at the zoo',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Hard',
 		title: 'Counting raindrops',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	},
 	{
 		difficulty: 'Hard',
 		title: 'Circus of death',
 		highscores: [{rank: 1, name: 'Arnold', score: 43}],
-		description: 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
+		description: description
 	}
 ]

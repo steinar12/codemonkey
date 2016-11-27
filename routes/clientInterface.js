@@ -8,21 +8,15 @@ var databaseInterface = new databaseInterfaceModule();
 databaseInterface.init();
 var problems_with_scores = [];
 
-function submitScore(player,problem,score,isNameTaken)
+function submitScore(player,problem,score,sendToClient)
 {
+	function isNameTaken(taken)
+	{
+		sendToClient(taken);
+	}
+
 	databaseInterface.insert(player,problem,score,isNameTaken);
 
-}
-function isNameTaken(taken)
-{
-	sendToClient(taken);
-}
-
-function sendToClient(response)
-{
-	console.log('SENDING TO CLIENT');
-	console.log(response);
-	//res.send(response);
 }
 
 function gradeSolution(solution,problem,sendToClient)
@@ -45,7 +39,7 @@ function gradeSolution(solution,problem,sendToClient)
 	
 }
 
-function loadProblems()
+function loadProblems(sendToClient)
 {	
 	problems_with_scores = [];
 
@@ -82,8 +76,6 @@ function loadProblems()
 
 	databaseInterface.getProblems(deliverProblems);	
 }
-
-
 
 function determineRank(score,problem,sendToClient)
 {
@@ -125,9 +117,6 @@ function determineRank(score,problem,sendToClient)
 
 }
 
-
-
-
 function functionizeSolution(solution)
 {
 	var functionIzedSolution = 'function solution_function(n){'+solution+'}';
@@ -135,11 +124,11 @@ function functionizeSolution(solution)
 }
 
 
-var fun = 'return 50;';
+//var fun = 'return 50;';
 
 
 var problem = 'primefactors';
-gradeSolution(functionizeSolution(fun),problem,sendToClient);
+//gradeSolution(functionizeSolution(fun),problem,sendToClient);
 //loadProblems();
 
 /* GET home page. */
@@ -149,9 +138,16 @@ router.get('/', function(req, res, next) {
 
 /* Submit solution */
 router.post('/submit', function(req, res, next) {
+
+	function sendToClient(response)
+	{
+		console.log('SENDING TO CLIENT');
+		console.log(response);
+		res.send(response);
+	}
+
 	var solution = req.body.solution;
-	//gradeSolution(functionizeSolution(solution),problem,sendToClient);	
-	//res.send(response);
+	gradeSolution(functionizeSolution(solution),problem,sendToClient);	
 });
 
 router.post('/submitScore', function(req, res, next) {
@@ -163,7 +159,14 @@ router.post('/submitScore', function(req, res, next) {
 
 router.get('/loadProblems', function(req, res, next) {
 
-	//loadProblems();
+	function sendToClient(response)
+	{
+		console.log('SENDING TO CLIENT');
+		console.log(response);
+		res.send(response);
+	}
+
+	loadProblems(sendToClient);
 });
 
 

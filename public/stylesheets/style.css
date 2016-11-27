@@ -235,3 +235,9 @@ html, body {
 .hard {
 	background-color: rgb(210,180,180);
 }
+
+.footer {
+	height: 45vh;
+	background-color: rgb(210,180,180);
+	margin-top: 5vh;
+}
