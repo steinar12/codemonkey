@@ -4,6 +4,7 @@ var tester = function() {
   var async = require('async');
   var timer = require('intelli-timer');
   var Promise = require('bluebird');
+  var childProcess = require('child_process');
 
   var primefactors_param = 13708;
   var primefactors_answer = [2,2,23,149];
@@ -17,76 +18,36 @@ var tester = function() {
 
 
       eval(solution);
-
-      /*function do_something()
+      
+      /*function cb(err,res)
       {
-        console.log('made it to test');
-
-        for(var i = 0; i<100000; i++)
-        {
-          console.log('ding ding: ' + i);
-        }
-
+        console.log('CALLED CALLBACK');
+        console.log('error',err);
+        console.log('result',res);
       }
 
-      var fun = do_something();
+      var options = {
+        someData: {a:1, b:2, c:3},
+        asyncFn: function (data, callback) {console.log('ran asyncFn!');}        
+      };
 
-      function setToNull()
-      {
-        fun = null;
-      }
+      options.asyncFn = options.asyncFn.toString();
 
-
-      setTimeout(fun,1000);
-      fun();
-
-
-      
-
-
-
-
-
-
-      function testfunc() {
-        var fail = false;
-        return new Promise(function(resolve, reject){
-          do_something();          
+      function Parent(options, callback) {
+        var child = childProcess.fork('./models/childProcesser.js');
+        child.send({
+          method: method,
+          options: options
         });
-
-      }
-
-      testfunc().timeout(100).then(function() {
-            console.log('resolved!');
-        
-      }).catch(Promise.TimeoutError, function(e) {
-        console.log("could not execute file within 1000ms");
-      });*/
-
-          
-      
-      
-      
-      
-/*
-      timer.countdown(20, function(timerCallback){  // time limit is 0.5 second 
-        
-        //test();
-        //timerCallback();
-
-        do_something('err',function(){
-            
-            timerCallback();    // timerCallback() after finish do_something() 
+        child.on('message', function(data){
+          callback(data.err,data.result);
+          child.kill();
         });
-     
-    }, function(err){
-     
-        if(err) console.log(err);  // err is null when the task is completed in time 
-        else console.log('success');
-     
-    });
+      }
+      //console.log('Before calling parent');
+      Parent(options, cb);
+      console.log('finished creating parent');*/
 
-*/    
       solution_function(500);
      
       return 'No errors were found';

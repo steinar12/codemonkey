@@ -8,15 +8,25 @@ var databaseInterface = new databaseInterfaceModule();
 databaseInterface.init();
 var problems_with_scores = [];
 var unregistered_scores = [];
+var testScore = 
+{
+	id : '69',
+    score : '1337',
+    problem : 'primefactors',
+}
+unregistered_scores.push(testScore);
+
 
 function submitScore(player,problem,score,sendToClient,id)
 {
 	var matchedScore = false;
+	var matchedIndex = -1;
 	for(var i = 0; i<unregistered_scores.length; i++)
 	{
 		if(id === unregistered_scores[i].id && problem === unregistered_scores[i].problem && score === unregistered_scores[i].score)
 		{
-			matchedScore = true;			
+			matchedScore = true;
+			matchedIndex = i;
 		}
 	}
 
@@ -25,20 +35,15 @@ function submitScore(player,problem,score,sendToClient,id)
 		sendToClient('Nice try cheater');
 		return;
 	}
-
-	function isNameTaken(taken)
+	
+	if(matchedIndex !== -1)
 	{
-		if(taken) {
-			sendToClient('Name is taken');
-		}
-		else {
-			sendToClient('Name is not taken');
-		}
-		sendToClient(taken);
-	}
-
-	databaseInterface.insert(player,problem,score,isNameTaken);
-
+		unregistered_scores.splice(matchedIndex,1);
+		databaseInterface.insertScore(player,problem,score);
+		sendToClient('Success');
+	}	
+	
+	else sendToClient('Failure');	
 }
 
 function gradeSolution(solution,problem,sendToClient,id)
@@ -157,7 +162,7 @@ function functionizeSolution(solution)
 }
 
 
-/*	function sendToClient(response)
+function sendToClient(response)
 	{
 		console.log('SENDING TO CLIENT');
 		console.log(response);
@@ -168,8 +173,25 @@ var fun = '';
 
 
 var problem = 'primefactors';
-gradeSolution(functionizeSolution(fun),problem,sendToClient);*/
+gradeSolution(functionizeSolution(fun),problem,sendToClient);
 //loadProblems();
+/*function sendToClient(response)
+	{
+		console.log('SENDING TO CLIENT');
+		console.log(response);
+		console.log('length of unregistered responses: ' +unregistered_scores.length);
+		//res.send(response);
+	}*/
+
+/*var testScore = 
+{
+	id : '69',
+    score : '1337',
+    problem : 'primefactors',
+}*/
+
+//submitScore('Tingó','primefactors','1500',sendToClient,'69');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

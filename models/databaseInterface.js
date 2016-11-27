@@ -160,10 +160,8 @@ var databaseInterface = function() {
    * @param {problem} strengur sem inniheldur titil á vandamáli
    * @param {score} strengur sem inniheldur stig sem playerinn fékk
    *
-   *
-   * @callback {isNameTaken} Kallar á isNameTaken(true) ef búið var að skrá player, annars isNameTaken(false)
    */
-  self.insertScore = function(player,problem,score,isNameTaken) {
+  self.insertScore = function(player,problem,score) {
     db.serialize(function() {
 
         var players = [];
@@ -173,11 +171,6 @@ var databaseInterface = function() {
           players.push(row.name);
 
         }, function() {
-            if(players.length > 0) isNameTaken('Name is taken');
-            
-            else
-            {
-              
 
               var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
               stmt.run(null,player);
@@ -200,7 +193,6 @@ var databaseInterface = function() {
                   problem_id = ids[0].problem_id;
                   stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
                   stmt.run(null,score,player_id,problem_id);        
-                  isNameTaken('Name is not taken');
                   db.each('SELECT * FROM SCORES',function(err, row) {
                     console.log('score: ' + row.score);
 
@@ -209,7 +201,7 @@ var databaseInterface = function() {
                   
               });
 
-            }
+            
             
 
         });
