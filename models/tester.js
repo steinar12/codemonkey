@@ -5,6 +5,7 @@ var tester = function() {
   var timer = require('intelli-timer');
   var Promise = require('bluebird');
   var childProcess = require('child_process');
+  var childProcesserModule = require('./childProcesser');
 
   var primefactors_param = 13708;
   var primefactors_answer = [2,2,23,149];
@@ -28,16 +29,18 @@ var tester = function() {
 
       var options = {
         someData: {a:1, b:2, c:3},
-        asyncFn: function (data, callback) {console.log('ran asyncFn!');}        
+        asyncFn: function (data, callback) {console.log(data);},        
       };
 
       options.asyncFn = options.asyncFn.toString();
 
       function Parent(options, callback) {
-        var child = childProcess.fork('./models/childProcesser.js');
+
+        //var childProcesser = new childProcesserModule();
+        var child = childProcess.fork('./models/childProcesser');
         child.send({
-          method: method,
-          options: options
+          method : 'blabla',
+          options: options,
         });
         child.on('message', function(data){
           callback(data.err,data.result);
@@ -46,9 +49,10 @@ var tester = function() {
       }
       //console.log('Before calling parent');
       Parent(options, cb);
-      console.log('finished creating parent');*/
+      console.log('finished creating parent');
+      */
 
-      solution_function(500);
+      //solution_function(500);
      
       return 'No errors were found';
     }

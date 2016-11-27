@@ -9,14 +9,18 @@ databaseInterface.init();
 var problems_with_scores = [];
 var unregistered_scores = [];
 
-function submitScore(player,problem,score,sendToClient,id)
+function submitScore(player,problem,sendToClient,id)
 {
+	console.log('called submitScore');
 	var matchedScore = false;
+	var score = '';
 	for(var i = 0; i<unregistered_scores.length; i++)
 	{
 		if(id === unregistered_scores[i].id && problem === unregistered_scores[i].problem && score === unregistered_scores[i].score)
 		{
-			matchedScore = true;			
+			matchedScore = true;
+			score = unregistered_scores[i].score;
+
 		}
 	}
 
@@ -194,11 +198,19 @@ router.post('/submit', function(req, res, next) {
 });
 
 router.post('/submitScore', function(req, res, next) {
+	function sendToClient(response)
+	{
+		console.log('SENDING TO CLIENT');
+		res.send(response);
+	}
+	console.log('called submitScore');
+	//console.log(body);
 	var playerName = req.body.name;
 	var problem = req.body.problem;
+	console.log(req.body);
 	var id = req.session.id;
-	//eða id á þeim sem var að solvea
-	submitScore(playerName,problem,id);
+	
+	submitScore(playerName,problem,sendToClient,id);
 	
 });
 

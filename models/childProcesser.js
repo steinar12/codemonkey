@@ -1,8 +1,8 @@
-var childProcesser = function() {
-  var self = this;
-  
+
+module.exports = function () {
+    console.log('Im in childProcesser module');
   process.on('message', function(data){
-  var method = data.method;
+  console.log('recieved message in child!');
   var options = data.options;
   var someData = options.someData;
   var asyncFn = new Function('return ' + options.asyncFn)();
@@ -13,12 +13,8 @@ var childProcesser = function() {
     });
   });
 });
+  
+}
 
 
 
-
-};
-
-
-
-module.exports = childProcesser;

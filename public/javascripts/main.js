@@ -39,7 +39,7 @@ function addProblem(problemInfo, replace){
 
 	problemDiff.text(problemInfo.difficulty);
 	title.text(problemInfo.title);
-	console.log(problemInfo);
+	
 	if(problemInfo.highscores[0]) record.text(problemInfo.highscores[0].score + "ms");
 	else record.text("Unsolved");
 	problemRecord.append(record);
@@ -220,14 +220,15 @@ function generateHSTable(highscores){
 function runSolution(solution, problem, problemInfo, writeToConsole){
 	var query = {solution: solution, title: problemInfo.title};
 	$.post('/submit', query, function(resp) {
-		console.log('Solution submitted');
-		console.log(resp);
 		handleResponse(resp, problem, problemInfo, writeToConsole);
   	});
 }
 
 function submitScore(playerName, problemInfo){
 	var query = {name: playerName, problem: problemInfo.title};
+	console.log(query);
+	console.log('playerName: ' + playerName);
+	console.log('probleminfo title: ' + problemInfo.title);
 	$.post('/submitScore', query, function(resp) {
 		console.log('Score submitted');
 		console.log(resp);
@@ -265,7 +266,9 @@ function addCorrectAnswerPopup(problem, problemInfo, response){
 	var popupExitButton = newImg(['popup-exit-button'], "http://totravelistolearn.in/wp-content/themes/travel/images/cross-512.png");
 
 	popupSubmitButton.click(function(){
-		submitScore(popupInput.value, problemInfo.title);
+		console.log('popupInput: ' + popupInput.value);
+		console.log(problemInfo);
+		submitScore(popupInput.value, problemInfo);
 		problem.replaceWith(addProblem(problemInfo, true));	
 		$('body').css('overflow', 'auto');
 	});
