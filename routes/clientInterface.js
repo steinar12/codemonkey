@@ -28,19 +28,21 @@ function sendToClient(response)
 function gradeSolution(solution,problem,sendToClient)
 {
 	var response = tester.gradeSolution(solution,problem);
+	console.log('type after grading solution: ' + response.type);
 	switch(response.type) {
         case 'error':
         	sendToClient(response);
+        	break;
          case 'answer':
         	sendToClient(response);
+        	break;
          case 'score':
          	determineRank(response.message,problem,sendToClient);
             break;
         default:
             console.log('failed to grade solution');
     }
-
-	sendToClient(response);
+	
 }
 
 function loadProblems()
@@ -85,6 +87,7 @@ function loadProblems()
 
 function determineRank(score,problem,sendToClient)
 {
+	console.log('entered determine rank');
 	function createResponse(scores,problem)
 	{
 		var problem_scores = [];
@@ -132,12 +135,12 @@ function functionizeSolution(solution)
 }
 
 
-var fun = 'return [2,2,23,149];';
+var fun = 'return 50;';
 
 
 var problem = 'primefactors';
-//gradeSolution(functionizeSolution(fun),problem,sendToClient);
-loadProblems();
+gradeSolution(functionizeSolution(fun),problem,sendToClient);
+//loadProblems();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

@@ -200,9 +200,10 @@ var tester = function() {
     switch(problem) {
         case 'primefactors':
             {
+              var solutionIsCorrect;
               var solution_res = solution_function(primefactors_param);
-              
-              var solutionIsCorrect = self.equalArrays(solution_res,primefactors_answer);
+              if(solution_res.constructor !== Array) return false;
+              solutionIsCorrect = self.equalArrays(solution_res,primefactors_answer);
               return solutionIsCorrect;
 
             }
