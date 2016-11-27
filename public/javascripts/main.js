@@ -216,6 +216,13 @@ function generateHSTable(highscores){
 	}
 	return hsTable;
 }
+/*
+function testSolution(solution,problem,problemInfo,writeToConsole)
+{
+	try{
+		eval()
+	}
+}*/
 
 function runSolution(solution, problem, problemInfo, writeToConsole){
 	var query = {solution: solution, title: problemInfo.title};

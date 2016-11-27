@@ -19,38 +19,7 @@ var tester = function() {
 
 
       eval(solution);
-      
-      /*function cb(err,res)
-      {
-        console.log('CALLED CALLBACK');
-        console.log('error',err);
-        console.log('result',res);
-      }
 
-      var options = {
-        someData: {a:1, b:2, c:3},
-        asyncFn: function (data, callback) {console.log(data);},        
-      };
-
-      options.asyncFn = options.asyncFn.toString();
-
-      function Parent(options, callback) {
-
-        //var childProcesser = new childProcesserModule();
-        var child = childProcess.fork('./models/childProcesser');
-        child.send({
-          method : 'blabla',
-          options: options,
-        });
-        child.on('message', function(data){
-          callback(data.err,data.result);
-          child.kill();
-        });
-      }
-      //console.log('Before calling parent');
-      Parent(options, cb);
-      console.log('finished creating parent');
-      */
 
       //solution_function(500);
      
@@ -61,7 +30,7 @@ var tester = function() {
       //return err;
     }
 
-  }   
+  }
 
 
   self.generateTestArray = function(problem)

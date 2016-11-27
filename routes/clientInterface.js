@@ -30,18 +30,7 @@ function submitScore(player,problem,sendToClient,id)
 		return;
 	}
 
-	function isNameTaken(taken)
-	{
-		if(taken) {
-			sendToClient('Name is taken');
-		}
-		else {
-			sendToClient('Name is not taken');
-		}
-		sendToClient(taken);
-	}
-
-	databaseInterface.insert(player,problem,score,isNameTaken);
+	databaseInterface.insert(player,problem,score);
 
 }
 
