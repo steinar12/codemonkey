@@ -24,13 +24,13 @@ function gradeSolution(solution,problem,sendToClient)
 	var response = tester.gradeSolution(solution,problem);
 	console.log('type after grading solution: ' + response.type);
 	switch(response.type) {
-        case 'error':
+        case 'Error':
         	sendToClient(response);
         	break;
-         case 'answer':
+         case 'Answer':
         	sendToClient(response);
         	break;
-         case 'score':
+         case 'Score':
          	determineRank(response.message,problem,sendToClient);
             break;
         default:

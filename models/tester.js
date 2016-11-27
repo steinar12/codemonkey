@@ -133,14 +133,14 @@ var tester = function() {
       if(isSolutionCorrect)
       {
         var time = self.speedTest(solution_function,problem);
-        response.type = 'score';
+        response.type = 'Score';
         response.message = self.convertToScore(time,problem);
         return response;
       } 
       else
       {
-        response.type = 'answer';
-        response.message = 'incorrect';
+        response.type = 'Answer';
+        response.message = 'Incorrect';
         return response;
       }
       
@@ -148,7 +148,7 @@ var tester = function() {
 
     else
     {
-      response.type = 'error';
+      response.type = 'Error';
       response.message = testResult;
       return response;
     }

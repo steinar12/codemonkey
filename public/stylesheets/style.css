@@ -212,15 +212,16 @@ html, body {
 	padding-top: 2%;
 	margin: 3%;
 	background-color: rgb(20,20,20);
+
+	overflow-y: auto;
 }
 
 .console-line {
 	color: rgb(170,170,170);
 	width: 93%;
-	height: 5%;
 	margin-left: 2%;
 	margin-right: 5%;
-	margin-top: -0.6vh;
+	margin-top: 1.4vh;
 	font-size: 2vh;
 }
 

@@ -118,15 +118,19 @@ function addProblem(problemInfo, replace){
 		}, {mode:  "javascript", lineNumbers: true, theme: 'dracula'});
 
 		solveButton.hide();
+
+		$('body').css('overflow', 'hidden');
 	});
 
 	codeMirrorSubmit.click(function(){
 		var solution = myCodeMirror.getValue();
-		submitSolution(solution);
+		console.log("Submit button clicked!");
+		submitSolution(solution, problem, problemInfo.title, writeToConsole);
 	});
 
 	exitButton.click(function(){
 		problem.replaceWith(addProblem(problemInfo, true));	
+		$('body').css('overflow', 'auto');
 	});
 
 	problem.hover(function(){
@@ -152,9 +156,6 @@ function addProblem(problemInfo, replace){
 		consoleLine.text(text);
 		myConsole.append(consoleLine);
 	}
-
-	writeToConsole("console texti");
-	writeToConsole("fuck niggers");
 
 	if(replace) return problem.hide().fadeIn(1200);
 	else $('.problem-container').append(problem);
@@ -207,17 +208,26 @@ function generateHSTable(highscores){
 	return hsTable;
 }
 
-function submitSolution(solution){
-	var query = {solution};
+function submitSolution(solution, problem, problemTitle, writeToConsole){
+	var submission = {solution: solution, title: problemTitle};
+	var query = {submission};
 	$.post('/submit', query, function(resp) {
 		console.log('Solution submitted');
 		console.log(resp);
-		handleResponse(resp);
+		handleResponse(resp, problem, writeToConsole);
   	});
 }
 
-function handleResponse(response){
+function handleResponse(response, problem, writeToConsole){
 
+	// Byrjum á að skrifa skilaboðin í console
+	var consoleMessage = response.type + ":  " + response.message;
+	writeToConsole(consoleMessage);
+
+	// Ef að svarið er rétt, þá birtum við scorið
+	if(response.type === "Score") {
+
+	}
 }
 
 // Temporary database.
