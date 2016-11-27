@@ -105,7 +105,7 @@ var tester = function() {
     for(var i = 0; i<800000; i++)
     {
       arr.push(Math.floor((Math.random() * 50) + 1));
-    }    
+    }
     return arr;
   };
 
@@ -194,14 +194,14 @@ var tester = function() {
   }
 
   self.compareToAnswer = function(solution_function,problem)
-  {
-    
+  {    
 
     switch(problem) {
         case 'primefactors':
             {
               var solutionIsCorrect;
               var solution_res = solution_function(primefactors_param);
+              if(typeof(solution_res) === "undefined") return false;
               if(solution_res.constructor !== Array) return false;
               solutionIsCorrect = self.equalArrays(solution_res,primefactors_answer);
               return solutionIsCorrect;

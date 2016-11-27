@@ -173,7 +173,7 @@ var databaseInterface = function() {
           players.push(row.name);
 
         }, function() {
-            if(players.length > 0) isNameTaken(true);
+            if(players.length > 0) isNameTaken('Name is taken');
             
             else
             {
@@ -200,7 +200,7 @@ var databaseInterface = function() {
                   problem_id = ids[0].problem_id;
                   stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
                   stmt.run(null,score,player_id,problem_id);        
-                  isNameTaken(false);          
+                  isNameTaken('Name is not taken');
                   db.each('SELECT * FROM SCORES',function(err, row) {
                     console.log('score: ' + row.score);
 
