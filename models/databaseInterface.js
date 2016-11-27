@@ -15,8 +15,9 @@ var databaseInterface = function() {
         db.run("CREATE TABLE SCORES (_id INTEGER PRIMARY KEY, score INTEGER, _player_id INTEGER, _problem_id INTEGER,"+
                " FOREIGN KEY(_player_id) REFERENCES PLAYER(_id), FOREIGN KEY(_problem_id) REFERENCES PROBLEMS(_id))");
         
-        self.loadInitialData();
         console.log('Database did not exist before, created a new one!');
+        self.loadInitialData();
+        
       }    
 
     });
@@ -28,7 +29,7 @@ var databaseInterface = function() {
    * 
    */
   self.loadInitialData = function() {
-
+     console.log('loaded initial data');
      //TEST DATA
      var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
      stmt.run(null,'Siggi');
@@ -40,6 +41,7 @@ var databaseInterface = function() {
 
      stmt = db.prepare('INSERT INTO PROBLEMS VALUES (?,?,?,?)');
      stmt.run(null,'primefactors','return an array containing the prime factors of n in ascending order','Easy');
+
      stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
      stmt.run(null,'69','1','1');
      stmt.run(null,'1','2','1');
@@ -63,6 +65,7 @@ var databaseInterface = function() {
   self.getScores = function(problem,deliverScores) {
 
     db.serialize(function() {
+      console.log('problem in getScores: ' + problem);
 
       var statement = 'SELECT score, name FROM SCORES JOIN PLAYERS ON PLAYERS._id = SCORES._player_id'+
                        ' JOIN PROBLEMS ON PROBLEMS._id = SCORES._problem_id WHERE PROBLEMS.title = ?';
@@ -79,8 +82,8 @@ var databaseInterface = function() {
         scores.push(score);
 
       }, function() {
-        console.log('length of scores after finishing sql: ' + scores.length);
         deliverScores(scores);
+       
                   
       });
       
@@ -88,7 +91,30 @@ var databaseInterface = function() {
 
   };
 
+  self.getProblems = function(deliverProblems){
 
+     db.serialize(function() {
+      console.log('problem in getScores: ' + problem);
+
+      var problems = [];
+      db.each(statement, function(err, row) {
+        var problem = {
+          id : row._id,
+          title : row.title,
+          description : row.description,
+          difficulty : row.difficulty,
+          highscores : [],
+        }
+        problems.push(problem);       
+
+      }, function() {
+        deliverProblems(problems);       
+                  
+      });
+      
+    });
+
+  };
 
    /**
    * Bætir við nýju scorei fyrir tiltekið problem ef ekki er búið að skrá 
@@ -116,7 +142,7 @@ var databaseInterface = function() {
             
             else
             {
-              isNameTaken(false);
+              
 
               var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
               stmt.run(null,player);
@@ -138,7 +164,8 @@ var databaseInterface = function() {
                   player_id = ids[0].player_id;
                   problem_id = ids[0].problem_id;
                   stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
-                  stmt.run(null,score,player_id,problem_id);
+                  stmt.run(null,score,player_id,problem_id);        
+                  isNameTaken(false);          
                   db.each('SELECT * FROM SCORES',function(err, row) {
                     console.log('score: ' + row.score);
 

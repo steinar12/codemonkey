@@ -5,16 +5,17 @@ var testerModule = require('../models/tester');
 
 var tester = new testerModule();
 var databaseInterface = new databaseInterfaceModule();
+databaseInterface.init();
 
+
+function submitScore(player,problem,score,isNameTaken)
+{
+	databaseInterface.insert(player,problem,score,isNameTaken);
+
+}
 function isNameTaken(taken)
 {
-	console.log('name is taken: ' + taken);
-}
-
-function testSolution(solution,problem)
-{
-	response = tester.testSolution(solution,problem);
-	return response;
+	sendToClient(taken);
 }
 
 function sendToClient(response)
@@ -25,7 +26,7 @@ function sendToClient(response)
 
 function gradeSolution(solution,problem,sendToClient)
 {
-	response = tester.gradeSolution(solution,problem);
+	var response = tester.gradeSolution(solution,problem);
 	switch(response.type) {
         case 'error':
         	sendToClient(response);
@@ -41,6 +42,42 @@ function gradeSolution(solution,problem,sendToClient)
 	sendToClient(response);
 }
 
+function loadProblems()
+{
+	var problems_with_scores = [];
+
+	function addHighscoreToProblem(problem,scores)
+	{
+		scores.sort();
+		scores.reverse();
+		for(var i = 0; i<scores.length; i++)
+		{
+			if(i >= 10) return;
+			score = 
+			{
+				rank : (i+1),
+				name : scores[i].name,
+				rank : scores[i].rank,
+			}
+			problem.highscores.push(score);
+		}
+		problems_with_scores.push(problem);
+	}
+
+	function deliverProblems(problems)
+	{
+		for(var i = 0; i<problems.length; i++)
+		{
+
+		}
+
+		databaseInterface.getScores(problem,addHighscoreToProblem);
+
+	}
+}
+
+
+
 function determineRank(score,problem,sendToClient)
 {
 	function createResponse(scores)
@@ -55,6 +92,7 @@ function determineRank(score,problem,sendToClient)
 		{
 			type : 'rank',
 			message : '',
+			score : score,
 		}
 
 		scores.sort();
@@ -63,12 +101,12 @@ function determineRank(score,problem,sendToClient)
 		{
 			if(score > scores[i])
 			{
-				response.message = 'You are ranked number '+(i+1)+' out of '+scores.length+' players';
+				response.message = 'You are ranked number '+(i+1)+' out of '+(scores.length+1)+' players';
 				sendToClient(response);
 			}
 		}
 
-		response.message = 'You are ranked number '+(scores.length+1)+' out of '+scores.length+' players';
+		response.message = 'You are ranked number '+(scores.length+1)+' out of '+(scores.length+1)+' players';
 		sendToClient(response);
 	}
 
@@ -85,22 +123,12 @@ function functionizeSolution(solution)
 	return functionIzedSolution;
 }
 
-//databaseInterface.init();
-//databaseInterface.insertScore('trimbóni','Sort','13337777',isNameTaken);
-
 
 var fun = 'return [2,2,23,149];';
 
-//var response = testSolution(functionizeSolution(fun));
-//console.log('RESPONSE: ' + response);
 
 var problem = 'primefactors';
 gradeSolution(functionizeSolution(fun),problem,sendToClient);
-//console.log('type of response: ' + response.type);
-//console.log('message of response: ' + response.message);
-
-
-
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -110,9 +138,22 @@ router.get('/', function(req, res, next) {
 /* Submit solution */
 router.post('/submit', function(req, res, next) {
 	var solution = req.body.solution;
-
-	//gradeSolution(functionizeSolution(solution),problem,sendToClient);
+	//gradeSolution(functionizeSolution(solution),problem,sendToClient);	
 	//res.send(response);
 });
+
+router.post('/submitScore', function(req, res, next) {
+	var playerName = req.body.name;
+	var problem = req.body.problem;//eða id á þeim sem var að solvea
+	//submitScore(playerName,problem,score,isNameTaken);
+	
+});
+
+router.get('/loadProblems', function(req, res, next) {
+
+	//loadProblems();
+});
+
+
 
 module.exports = router;

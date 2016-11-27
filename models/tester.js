@@ -128,7 +128,6 @@ var tester = function() {
 
     if(testResult === 'No errors were found')
     {
-      console.log('no errors found, proceeding to tests');
       eval(solution);
       var isSolutionCorrect = self.compareToAnswer(solution_function,problem);
       if(isSolutionCorrect)
