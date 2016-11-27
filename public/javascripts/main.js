@@ -228,11 +228,9 @@ function runSolution(solution, problem, problemInfo, writeToConsole){
 
 function submitScore(playerName, problemInfo){
 	var query = {name: playerName, problem: problemInfo.title};
-	$.post('/submit', query, function(resp) {
+	$.post('/submitScore', query, function(resp) {
 		console.log('Score submitted');
 		console.log(resp);
-
-		//handleResponse(resp, problem, problemTitle, writeToConsole);
   	});
 }
 

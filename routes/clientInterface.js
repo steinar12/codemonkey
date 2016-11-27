@@ -198,7 +198,7 @@ router.post('/submitScore', function(req, res, next) {
 	var problem = req.body.problem;
 	var id = req.session.id;
 	//eða id á þeim sem var að solvea
-	//submitScore(playerName,problem,score,isNameTaken);
+	submitScore(playerName,problem,id);
 	
 });
 
