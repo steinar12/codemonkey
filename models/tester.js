@@ -5,170 +5,137 @@ var tester = function() {
   var timer = require('intelli-timer');
   var Promise = require('bluebird');
   var childProcess = require('child_process');
-  var childProcesserModule = require('./childProcesser');
+  var sandbox = require('sandbox');
+  var problems = {};
 
-  var primefactors_param = 13708;
-  var primefactors_answer = [2,2,23,149];
+
+  //yourVariable !== null && typeof yourVariable === 'object'
 
   var self = this;
 
-  self.testSolution = function(solution,problem)
-  {
-    //console.log('solution: ' + solution);
-    try {
+
+  self.examineSolution = function(solution, problem, deliverResults) {
+
+    var string_func = "function speedtest_function(solution_function, param) {var start = new Date();var totalTime = 0;for (var i = 0; i < 20; i++) {solution_function(param);}    var end = new Date() - start; var time = end/20; return time;}";
 
 
-      eval(solution);
+    s = new sandbox();
+    s.options.timeout = 2000;
+    var param1 = problems[problem].param1;
+    var answer1 = problems[problem].answer1;
+    var param2 = problems[problem].param2;
+    var answer2 = problems[problem].answer2;
+    var outerfunction = "function wrapping_function(param1,param2,solution,speedtest) {eval(speedtest); eval(solution); var response = {res1:'', res2:'', speed1:'', speed2:'',}; " +
+      " response.res1 = solution_function(param1); response.speed1 = speedtest_function(solution_function,param1);  " +
+      "response.res2 = solution_function(param2); response.speed2 = speedtest_function(solution_function,param2); " +
+      "return response;}";
 
 
-      solution_function(500);
-     
-      return 'No errors were found';
-    }
-    catch(err){
-      return 'The following error was found in your code: '+err;
-      //return err;
-    }
-
-  }
+    var speedtest = string_func;
+    
+    var stringversion = "(" + outerfunction + ")";
+    
+    var parameters = "('" + param1 + "','" + param2 + "','" + solution + "','" + speedtest + "')";
+    var stringToRun = stringversion + parameters;
 
 
-  self.generateTestArray = function(problem)
-  {
-    var arr = [];
-    for(var i = 0; i<800000; i++)
-    {
-      arr.push(Math.floor((Math.random() * 50) + 1));
-    }
-    return arr;
+    s.run(stringToRun, function(output) {
+      console.log("Example 2: " + output.result + "\n");
+      self.handleResult(output.result, problem, deliverResults);
+    });
+
   };
 
-  self.convertToScore = function(time,problem)
-  {
-    var score = Math.ceil(time*100);
+  self.growthScore = function(time1, time2, problem) {
+    var ratio = time1 / time2;
+    var ratioSquared = ratio * ratio;
+    var score = Math.floor(ratioSquared * 2500);
     return score;
   }
 
-  self.gradeSolution = function(solution,problem)
-  {
 
-    var testResult = self.testSolution(solution,problem);
+  self.handleResult = function(result, problem, deliverResults) {
 
-    var response = 
-    {
+    var resp = {
       type: '',
       message: '',
-    };
+    }
 
-    if(testResult === 'No errors were found')
-    {
-      eval(solution);
-      var isSolutionCorrect = self.compareToAnswer(solution_function,problem);
-      if(isSolutionCorrect)
-      {
-        var time = self.speedTest(solution_function,problem);
-        response.type = 'Score';
-        response.message = self.convertToScore(time,problem);
-        return response;
-      } 
-      else
-      {
-        response.type = 'Answer';
-        response.message = 'Incorrect';
-        return response;
-      }
+    result = JSON.stringify(eval("(" + result + ")"));
+    result = JSON.parse(result);
+    if (result !== null && typeof result === 'object') {
       
+      var answer1 = problems[problem].answer1;
+      var answer2 = problems[problem].answer2;
+
+      var correctAnswer1 = self.compareToAnswer(result.res1, problem, answer1);
+      var correctAnswer2 = self.compareToAnswer(result.res2, problem, answer2);
+      if (correctAnswer1 && correctAnswer2) {
+        resp.type = 'Score';
+        resp.message = self.growthScore(result.speed1, result.speed2,problem);
+        deliverResults(resp, problem);
+        return;
+      } else {
+        resp.type = 'Answer';
+        resp.message = 'Incorrect';
+        deliverResults(resp, problem);
+        return;
+      }
     }
 
-    else
-    {
-      response.type = 'Error';
-      response.message = testResult;
-      return response;
-    }
+    resp.type = 'Error';
+    resp.message = result;
+    deliverResults(resp, problem);
 
   };
 
 
-  self.speedTest = function(solution_function,problem)
-  {
-    
-    switch(problem) {
-        case 'Primefactors':
-            {
-
-            var hrstart = process.hrtime();
-
-            solution_function(primefactors_param);
-
-            var hrend = process.hrtime(hrstart);
-            console.log('this solution took: ' + (hrend[1]/1000000) + ' milliseconds');
-            return (hrend[1]/1000000);
-            }
-            break;
-        default:
-            console.log('this problem do not exist');
-    }
-
-  };
-
-
-  self.equalArrays = function(array1,array2)
-  {
-    var equalLength = array1.length===array2.length;
-    if(!equalLength) return false;
-    for(var i = 0; i<array1.length; i++)
-    {
-      if(array1[i]!==array2[i]) 
-      {
+  self.equalArrays = function(array1, array2) {
+    var equalLength = array1.length === array2.length;
+    if (!equalLength) return false;
+    for (var i = 0; i < array1.length; i++) {
+      if (array1[i] !== array2[i]) {
         return false;
       }
     }
     return true;
   }
 
-  self.compareToAnswer = function(solution_function,problem)
-  {    
+  self.compareToAnswer = function(result, problem, answer) {
 
-    switch(problem) {
-        case 'Primefactors':
-            {
-              var solutionIsCorrect;
-              var solution_res = solution_function(primefactors_param);
-              if(typeof(solution_res) === "undefined") return false;
-              if(solution_res.constructor !== Array) return false;
-              solutionIsCorrect = self.equalArrays(solution_res,primefactors_answer);
-              return solutionIsCorrect;
-
-            }
-            break;
-        default:
-            console.log('this problem does not exist');
+    switch (problem) {
+      case 'Primefactors':
+        {
+          var solutionIsCorrect;
+          if (typeof(result) === "undefined") return false;
+          if (result.constructor !== Array) return false;
+          solutionIsCorrect = self.equalArrays(result, answer);
+          return solutionIsCorrect;
+        }
+        break;
+      default:
+        
     }
 
     return false;
   };
 
-
-/*
-  self.getParameters = function(problem)
-  {
-    switch(problem) {
-        case 'primefactors':
-            return primefactors_param;
-            break;
-        default:
-            console.log('parameteres for this problem do not exist');
+  self.defineParameters = function() {
+    answerx = [2, 2, 23, 149];
+    answery = [11, 109, 1307];
+    problems['Primefactors'] = {
+      param1: 13708,
+      answer1: answerx,
+      param2: 1567093,
+      answer2: answery,
+      coefficient: 2500,
     }
-      
-  };
-*/
+
+  }
 
 
 
 
 };
-
-
 
 module.exports = tester;

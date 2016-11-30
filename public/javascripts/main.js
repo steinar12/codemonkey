@@ -1,6 +1,8 @@
 $(document).ready(function(){
 	// Add in all the problem elements
 	loadProblems();
+	problem_parameters = {};
+	defineParameters();
 });
 
 // Creates and returns a problem html element based on the problemInfo parameter.
@@ -216,13 +218,7 @@ function generateHSTable(highscores){
 	}
 	return hsTable;
 }
-/*
-function testSolution(solution,problem,problemInfo,writeToConsole)
-{
-	try{
-		eval()
-	}
-}*/
+
 
 function runSolution(solution, problem, problemInfo, writeToConsole){
 	var query = {solution: solution, title: problemInfo.title};
@@ -234,8 +230,6 @@ function runSolution(solution, problem, problemInfo, writeToConsole){
 function submitScore(playerName, problemInfo){
 	var query = {name: playerName, problem: problemInfo.title};
 	console.log(query);
-	console.log('playerName: ' + playerName);
-	console.log('probleminfo title: ' + problemInfo.title);
 	$.post('/submitScore', query, function(resp) {
 		console.log('Score submitted');
 		console.log(resp);
@@ -313,3 +307,4 @@ function insertProblems(problems){
 		addProblem(problems[i]);
 	}
 }
+

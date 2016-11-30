@@ -2,31 +2,23 @@ var express = require('express');
 var router = express.Router();
 var databaseInterfaceModule = require('../models/databaseInterface');
 var testerModule = require('../models/tester');
+var xss = require('xss');
 
 var tester = new testerModule();
 var databaseInterface = new databaseInterfaceModule();
 databaseInterface.init();
 var problems_with_scores = [];
 var unregistered_scores = [];
+tester.defineParameters();
 
 function submitScore(player,problem,sendToClient,id)
 {
-	console.log('called submitScore function');
 	var matchedScore = false;
 	var score = '';
 	for(var i = 0; i<unregistered_scores.length; i++)
-	{
-		console.log(unregistered_scores);
-		console.log('problem: ' + problem);
-		console.log(id === unregistered_scores[i].id);
-		console.log(problem === unregistered_scores[i].problem);
-		console.log(score === unregistered_scores[i].score);
-		console.log('score sem ég tek inn: ' + score);
-		console.log('score sem er til fyrir: ' + unregistered_scores[i].score);
-
+	{		
 		if(id === unregistered_scores[i].id && problem === unregistered_scores[i].problem)
 		{
-			console.log('found matched score!!!!');
 			matchedScore = true;
 			score = unregistered_scores[i].score;
 
@@ -43,10 +35,9 @@ function submitScore(player,problem,sendToClient,id)
 
 }
 
-function gradeSolution(solution,problem,sendToClient,id)
+
+function handleResponse(response,problem,sendToClient,id)
 {
-	var response = tester.gradeSolution(solution,problem);
-	console.log('type after grading solution: ' + response.type);
 	switch(response.type) {
         case 'Error':
         	sendToClient(response);
@@ -62,7 +53,6 @@ function gradeSolution(solution,problem,sendToClient,id)
          			score : response.message,
          			problem : problem,
          		}
-         		console.log('pushing score into array');
          		unregistered_scores.push(unregistered_score);
          		determineRank(response.message,problem,sendToClient);
 
@@ -71,12 +61,21 @@ function gradeSolution(solution,problem,sendToClient,id)
         default:
             console.log('failed to grade solution');
     }
-	
+
+}
+
+function gradeSolution(solution,problem,sendToClient,id)
+{
+	function deliverResults(response,problem)
+	{
+		handleResponse(response,problem,sendToClient,id);
+	}
+
+	tester.examineSolution(solution,problem,deliverResults);	
 }
 
 function determineRank(score,problem,sendToClient)
-{
-	console.log('entered determine rank');
+{	
 	function createResponse(scores,problem)
 	{
 		var problem_scores = [];
@@ -159,19 +158,11 @@ function functionizeSolution(solution)
 }
 
 
-/*	function sendToClient(response)
-	{
-		console.log('SENDING TO CLIENT');
-		console.log(response);
-		//res.send(response);
-	}
-
-var fun = '';*/
+//var fun = 'function primefactors(n){var factors = [];  var i = 2;  while(n > 1){    if(n % i === 0){      factors.push(i);      n /= i;    } else {      i++;    }  }  return factors;}return primefactors(n);';
 
 
-//var problem = 'primefactors';
-//gradeSolution(functionizeSolution(fun),problem,sendToClient);
-//loadProblems();
+//gradeSolution(functionizeSolution(fun),'Primefactors',sendToClient,'1');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -180,21 +171,15 @@ router.get('/', function(req, res, next) {
 
 /* Submit solution */
 router.post('/submit', function(req, res, next) {
-	//console.log('this is our session id');
-	//console.log(req.session.id);
 
 	function sendToClient(response)
 	{
-		console.log('SENDING TO CLIENT');
 		res.send(response);
 	}
 
-	var solution = req.body.solution;
-	var problem = req.body.title;
-	console.log(req.body);
-	console.log('problem: ' + problem);
-	var id = req.session.id;
-	console.log('session id in submit: ' + id);
+	var solution = xss(req.body.solution || '');
+	var problem = xss(req.body.title || '');
+	var id = req.session.id;	
 	gradeSolution(functionizeSolution(solution),problem,sendToClient,id);
 
 });
@@ -202,17 +187,13 @@ router.post('/submit', function(req, res, next) {
 router.post('/submitScore', function(req, res, next) {
 	function sendToClient(response)
 	{
-		console.log('SENDING TO CLIENT');
 		res.send(response);
 	}
-	console.log('called submitScore');
-	//console.log(body);
-	var playerName = req.body.name;
-	var problem = req.body.problem;
-	console.log(req.body);
-	var id = req.session.id;
-	console.log('session id in submitScore: ' + id);
 	
+	var playerName = xss(req.body.name || '');
+	var problem = xss(req.body.problem || '');
+	var id = req.session.id;
+		
 	submitScore(playerName,problem,sendToClient,id);
 	
 });
@@ -221,7 +202,6 @@ router.get('/loadProblems', function(req, res, next) {
 
 	function sendToClient(response)
 	{
-		console.log('SENDING TO CLIENT');
 		res.send(response);
 	}
 

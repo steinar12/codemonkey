@@ -29,7 +29,7 @@ var databaseInterface = function() {
    * 
    */
   self.loadInitialData = function() {
-     console.log('loaded initial data');
+     
      //TEST DATA
      var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
      stmt.run(null,'Siggi');
@@ -55,10 +55,7 @@ var databaseInterface = function() {
      console.log(problemss.length);
      for(var i = 0; i < problemss.length; i++){
         for(var n = 0; n < problemss[i].highscores.length; n++){
-          var hsInfo = problemss[i].highscores[n];
-          //console.log("name:  " + hsInfo.name);
-          //console.log("title:  " + problemss[i].title);
-          //console.log("score:  " + hsInfo.score);
+          var hsInfo = problemss[i].highscores[n];          
           this.insertScore(hsInfo.name, problemss[i].title, hsInfo.score);
         }
      }
@@ -176,11 +173,6 @@ var databaseInterface = function() {
    */
   self.insertScore = function(player,problem,score) {
     db.serialize(function() {
-
-        /*db.each('SELECT * FROM PROBLEMS', function(err,row) {
-          console.log('row from problems');
-          console.log('title number'+row._id+': '+row.title);
-        });*/
 
 
               var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
