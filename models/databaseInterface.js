@@ -40,7 +40,7 @@ var databaseInterface = function() {
      stmt.run(null,'Palli');
 
      stmt = db.prepare('INSERT INTO PROBLEMS VALUES (?,?,?,?)');
-     stmt.run(null,'Primefactors','Return an array containing the prime factors of n in ascending order','Easy');
+     //stmt.run(null,'Primefactors','Return an array containing the prime factors of n in ascending order','Easy');
      for(var i = 0; i < problemss.length; i++){
        stmt.run(null, problemss[i].title, problemss[i].description, problemss[i].difficulty);
      }
@@ -216,99 +216,101 @@ var databaseInterface = function() {
 
   };
 
-  var description = 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies! This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!'
-  var problemss = [
+var description = 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies! This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!';
+
+var problemss = [
   {
     difficulty: 'Easy',
-    title: 'The traveling salesman',
+    title: 'Trees in a graveyard (Placeholder)',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}],
+    description: description
+  },
+  {
+    difficulty: 'Easy',
+    title: 'Primefactors',
     highscores: [{rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}],
-    description: description
+    description: 'Find the primefactors of "N".  (Return an array like this one: [f1,f2,f3...fx])'
   },
   {
     difficulty: 'Easy',
-    title: 'Snow white and the huntsman',
-    highscores: [{rank: 1, name: 'Arnold', score: 43}],
-    description: description
-  },
-  {
-    difficulty: 'Easy',
-    title: 'Trouble in paradise',
+    title: 'Trouble in paradise (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Easy',
-    title: 'One million grasshoppers',
+    title: 'One million grasshoppers (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Easy',
-    title: 'Romeo is looking for a lover',
+    title: 'Romeo is looking for a lover (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Medium',
-    title: 'Trees in a graveyard',
+    title: 'The knight in the staircase',
+    highscores: [{rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}, {rank: 1, name: 'Arnold', score: 43}, {rank: 1, name: 'Sly', score: 42}, {rank: 1, name: 'Bono', score: 44}],
+    description: 'A brave knight wants to climb the stairs to the highest tower and rescue the princess. The staircase has "N" steps and they are all marked with a number. The first step is marked with the number "1", the second one with the number "2" and so on. The knight really dislikes prime numbers, but he loves the Fibonacci sequence, so he plans on skipping every step that is marked with a prime number, unless the number is also part of the Fibonacci sequence. How many steps will the knight have to skip over?'
+  },
+  {
+    difficulty: 'Medium',
+    title: 'Banking gone wrong (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Medium',
-    title: 'Banking gone wrong',
+    title: 'Cowboys and wizards (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Medium',
-    title: 'Cowboys and wizards',
+    title: 'Which soup is the coldest? (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Medium',
-    title: 'Which soup is the coldest?',
-    highscores: [{rank: 1, name: 'Arnold', score: 43}],
-    description: description
-  },
-  {
-    difficulty: 'Medium',
-    title: 'Love and racketball',
+    title: 'Love and racketball (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Hard',
-    title: 'Prince of Russia',
+    title: 'Prince of Russia (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Hard',
-    title: 'Three golden coins and a goat',
+    title: 'Three golden coins and a goat (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Hard',
-    title: 'Day at the zoo',
+    title: 'Day at the zoo (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Hard',
-    title: 'Counting raindrops',
+    title: 'Counting raindrops (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   },
   {
     difficulty: 'Hard',
-    title: 'Circus of death',
+    title: 'Circus of death (Placeholder)',
     highscores: [{rank: 1, name: 'Arnold', score: 43}],
     description: description
   }
-]
+];
+
 
 
 

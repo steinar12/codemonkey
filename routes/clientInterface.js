@@ -181,7 +181,6 @@ router.post('/submit', function(req, res, next) {
 	var problem = xss(req.body.title || '');
 	var id = req.session.id;	
 	gradeSolution(functionizeSolution(solution),problem,sendToClient,id);
-
 });
 
 router.post('/submitScore', function(req, res, next) {

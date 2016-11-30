@@ -36,13 +36,13 @@ function addProblem(problemInfo, replace){
 	var codeMirrorWrapper = newDiv(['codemirror-wrapper']);
 	var codeMirrorMenuBar = newDiv(['codemirror-menubar']);
 	var codeMirrorSubmit = newDiv(['codemirror-btn', 'codemirror-submit-btn']);
-	codeMirrorSubmit.text('Submit');
+	codeMirrorSubmit.text('Run');
 	codeMirrorMenuBar.append(codeMirrorSubmit);
 
 	problemDiff.text(problemInfo.difficulty);
 	title.text(problemInfo.title);
 	
-	if(problemInfo.highscores[0]) record.text(problemInfo.highscores[0].score + "ms");
+	if(problemInfo.highscores[0]) record.text(problemInfo.highscores[0].score + " pts");
 	else record.text("Unsolved");
 	problemRecord.append(record);
 	problemRecord.append(hsTable);
@@ -173,7 +173,7 @@ function newDiv(classList){
 
 // Returns a new jquery img element with all the classes in classList.
 function newImg(classList, src){
-	var img = $('<img></input>');
+	var img = $('<img></img>');
 	img.attr('src', src);
 
 	for(var i = 0; i < classList.length; i++){
@@ -185,8 +185,9 @@ function newImg(classList, src){
 
 // Returns a new jquery input element with all the classes in classList.
 function newInput(classList, placeholder){
-	var input = $('<input></img>');
+	var input = $('<input></input>');
 	input.attr('placeholder', placeholder);
+	input.attr('maxlength', '12');
 
 	for(var i = 0; i < classList.length; i++){
 		input.addClass(classList[i]);
@@ -245,7 +246,7 @@ function handleResponse(response, problem, problemInfo, writeToConsole){
 	}
 
 	// Byrjum á að skrifa skilaboðin í console
-	var consoleMessage = response.type + ":  " + response.message;
+	var consoleMessage = response.message;
 	writeToConsole(consoleMessage);
 }
 
