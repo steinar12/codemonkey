@@ -165,14 +165,6 @@ function sendToClient(response)
 	//res.send(response);
 }
 
-
-//var fun = 'return 50;'
-var fun = 'function primefactors(n){var factors = [];  var i = 2;  while(n > 1){    if(n % i === 0){      factors.push(i);      n /= i;    } else {      i++;    }  }  return factors;}return primefactors(n);';
-
-
-gradeSolution(functionizeSolution(fun),'Primefactors',sendToClient,'1');
-
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
@@ -181,7 +173,6 @@ router.get('/', function(req, res, next) {
 /* Submit solution */
 router.post('/submit', function(req, res, next) {
 
-	//console.log(req.session.id);
 	var id = req.session.id;
 	if(submitted_ids.hasOwnProperty(id))
 	{

@@ -23,7 +23,7 @@ var tester = function() {
     var string_func = "function speedtest_function(solution_function, param) {var start = new Date();var totalTime = 0;for (var i = 0; i < 20; i++) {solution_function(param);}    var end = new Date() - start; var time = end/20; return time;}";
 
     s = new sandbox();
-    s.options.timeout = 5000;
+    s.options.timeout = 15000;
     var param1 = problems[problem].param1;
     var answer1 = problems[problem].answer1;
     var param2 = problems[problem].param2;
@@ -51,10 +51,11 @@ var tester = function() {
 
   // Returns a score based on the time complexity of the solution.
   self.growthScore = function(time1, time2, problem) {
-    var ratio = time1 / time2;
+    /*var ratio = time1 / time2;
     var ratioSquared = ratio * ratio;
-    var coefficient = problems[problem].coefficient;
-    var score = Math.floor(ratioSquared * coefficient);
+    var coefficient = problems[problem].coefficient;*/
+    //var score = Math.floor(ratioSquared * coefficient);
+    var score = Math.floor(time1);
     return score;
   }
 
@@ -67,14 +68,17 @@ var tester = function() {
       message: '',
     }
 
-    console.log('PRINTING RESULT');
-    console.log(result);
-    console.log('type of result: ' + typeof result);
+    if(result === 'TimeoutError')
+    {
+      resp.type = 'Error',
+      resp.message = result;
+      deliverResults(resp,problem);
+    }
+    result = JSON.stringify(eval("(" + result + ")"));
+    result = JSON.parse(result);
 
-    
     if (result !== null && typeof result === 'object') {
-      result = JSON.stringify(eval("(" + result + ")"));
-      result = JSON.parse(result);
+      
       
       var answer1 = problems[problem].answer1;
       var answer2 = problems[problem].answer2;
@@ -143,12 +147,12 @@ var tester = function() {
 
   // All the parameter that are passed into the functions that the users create. (based on which problem they are solving)
   self.defineParameters = function() {
-    var answerx = [2, 7, 28273727];
-    var answery = [2, 2, 7, 28273727];
+    var answerx = [2,2,3,32986013];
+    var answery = [2,2,2,3,32986013];
     problems['Primefactors'] = {
-      param1: 3958321,
+      param1: 395832156,
       answer1: answerx,
-      param2: 2*3958321,
+      param2: 2*395832156,
       answer2: answery,
       coefficient: 2500,
     }
