@@ -43,7 +43,6 @@ var tester = function() {
 
 
     s.run(stringToRun, function(output) {
-      console.log("Example 2: " + output.result + "\n");
       self.handleResult(output.result, problem, deliverResults);
     });
 

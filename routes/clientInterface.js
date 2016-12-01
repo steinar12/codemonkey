@@ -1,8 +1,12 @@
 var express = require('express');
+var fs = require('fs');
 var router = express.Router();
 var databaseInterfaceModule = require('../models/databaseInterface');
 var testerModule = require('../models/tester');
 var xss = require('xss');
+var https = require('https');
+var pem = require('pem');    
+ 
 
 var tester = new testerModule();
 var databaseInterface = new databaseInterfaceModule();
@@ -165,6 +169,10 @@ function sendToClient(response)
 	//res.send(response);
 }
 
+
+
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
@@ -217,7 +225,7 @@ router.post('/submitScore', function(req, res, next) {
 	
 });
 
-router.get('/loadProblems', function(req, res, next) {
+router.post('/loadProblems', function(req, res, next) {
 
 	function sendToClient(response)
 	{

@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var https = require('https');
+var pem = require('pem'); 
 
 var routes = require('./routes/clientInterface');
 var users = require('./routes/users');
@@ -27,6 +29,7 @@ app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }, resave: tru
 
 app.use('/', routes);
 app.use('/users', users);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

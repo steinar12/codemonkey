@@ -18,6 +18,8 @@
     "morgan": "~1.7.0",
     "nanotimer": "^0.3.14",
     "node-timeout": "0.0.4",
+    "openssl": "^1.1.0",
+    "pem": "^1.9.2",
     "pug": "^2.0.0-beta6",
     "sandbox": "^0.8.6",
     "serve-favicon": "~2.3.0",
