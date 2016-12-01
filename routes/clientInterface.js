@@ -9,6 +9,7 @@ var databaseInterface = new databaseInterfaceModule();
 databaseInterface.init();
 var problems_with_scores = [];
 var unregistered_scores = [];
+var submitted_ids = {};
 tester.defineParameters();
 
 function submitScore(player,problem,sendToClient,id)
@@ -160,7 +161,6 @@ function functionizeSolution(solution)
 
 function sendToClient(response)
 {
-	console.log('made it to desired sendToClient');
 	console.log(response);
 	//res.send(response);
 }
@@ -180,28 +180,47 @@ router.get('/', function(req, res, next) {
 
 /* Submit solution */
 router.post('/submit', function(req, res, next) {
-	
+
+	//console.log(req.session.id);
+	var id = req.session.id;
+	if(submitted_ids.hasOwnProperty(id))
+	{
+		if(submitted_ids[id] === 1)
+		{
+			console.log('Already calculating, returning!');
+			return;
+		}
+	}
 	function sendToClient(response)
 	{
+		submitted_ids[id] = 0;
 		res.send(response);
 	}
 	
 	solution = req.body.solution;
 	solution = solution.replace(/(\r\n|\n|\r)/gm,"");
 	var problem = xss(req.body.title || '');
-	var id = req.session.id;	
+	
+	
+
+	submitted_ids[id] = 1;
+	console.log('subbmitted hastable' + submitted_ids[id]);
+
 	gradeSolution(functionizeSolution(solution),problem,sendToClient,id);
 });
 
 router.post('/submitScore', function(req, res, next) {
+
+	
 	function sendToClient(response)
 	{
 		res.send(response);
 	}
 	
 	var playerName = xss(req.body.name || '');
-	var problem = xss(req.body.problem || '');
+	var problem = xss(req.body.problem || '');		
 	var id = req.session.id;
+
 		
 	submitScore(playerName,problem,sendToClient,id);
 	

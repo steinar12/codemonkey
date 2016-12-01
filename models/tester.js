@@ -146,9 +146,9 @@ var tester = function() {
     var answerx = [2, 7, 28273727];
     var answery = [2, 2, 7, 28273727];
     problems['Primefactors'] = {
-      param1: 395832178,
+      param1: 3958321,
       answer1: answerx,
-      param2: 2*395832178,
+      param2: 2*3958321,
       answer2: answery,
       coefficient: 2500,
     }
