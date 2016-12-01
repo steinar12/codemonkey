@@ -158,10 +158,19 @@ function functionizeSolution(solution)
 }
 
 
-//var fun = 'function primefactors(n){var factors = [];  var i = 2;  while(n > 1){    if(n % i === 0){      factors.push(i);      n /= i;    } else {      i++;    }  }  return factors;}return primefactors(n);';
+function sendToClient(response)
+{
+	console.log('made it to desired sendToClient');
+	console.log(response);
+	//res.send(response);
+}
 
 
-//gradeSolution(functionizeSolution(fun),'Primefactors',sendToClient,'1');
+//var fun = 'return 50;'
+var fun = 'function primefactors(n){var factors = [];  var i = 2;  while(n > 1){    if(n % i === 0){      factors.push(i);      n /= i;    } else {      i++;    }  }  return factors;}return primefactors(n);';
+
+
+gradeSolution(functionizeSolution(fun),'Primefactors',sendToClient,'1');
 
 
 /* GET home page. */
@@ -176,8 +185,9 @@ router.post('/submit', function(req, res, next) {
 	{
 		res.send(response);
 	}
-
-	var solution = xss(req.body.solution || '');
+	
+	solution = req.body.solution;
+	solution = solution.replace(/(\r\n|\n|\r)/gm,"");
 	var problem = xss(req.body.title || '');
 	var id = req.session.id;	
 	gradeSolution(functionizeSolution(solution),problem,sendToClient,id);

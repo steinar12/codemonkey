@@ -18,9 +18,8 @@ var tester = function() {
 
     var string_func = "function speedtest_function(solution_function, param) {var start = new Date();var totalTime = 0;for (var i = 0; i < 20; i++) {solution_function(param);}    var end = new Date() - start; var time = end/20; return time;}";
 
-
     s = new sandbox();
-    s.options.timeout = 2000;
+    s.options.timeout = 5000;
     var param1 = problems[problem].param1;
     var answer1 = problems[problem].answer1;
     var param2 = problems[problem].param2;
@@ -49,7 +48,8 @@ var tester = function() {
   self.growthScore = function(time1, time2, problem) {
     var ratio = time1 / time2;
     var ratioSquared = ratio * ratio;
-    var score = Math.floor(ratioSquared * 2500);
+    var coefficient = problems[problem].coefficient;
+    var score = Math.floor(ratioSquared * coefficient);
     return score;
   }
 
@@ -61,9 +61,14 @@ var tester = function() {
       message: '',
     }
 
-    result = JSON.stringify(eval("(" + result + ")"));
-    result = JSON.parse(result);
+    console.log('PRINTING RESULT');
+    console.log(result);
+    console.log('type of result: ' + typeof result);
+
+    
     if (result !== null && typeof result === 'object') {
+      result = JSON.stringify(eval("(" + result + ")"));
+      result = JSON.parse(result);
       
       var answer1 = problems[problem].answer1;
       var answer2 = problems[problem].answer2;
@@ -104,6 +109,15 @@ var tester = function() {
   self.compareToAnswer = function(result, problem, answer) {
 
     switch (problem) {
+      case 'The knight in the staircase':
+        {
+          var solutionIsCorrect;
+          if (typeof(result) === "undefined") return false;
+          if (Number.isInteger(result)) return false;
+          solutionIsCorrect = (parseInt(result) === parseInt(answer));
+          return solutionIsCorrect;
+        }
+        break;
       case 'Primefactors':
         {
           var solutionIsCorrect;
@@ -121,13 +135,22 @@ var tester = function() {
   };
 
   self.defineParameters = function() {
-    answerx = [2, 2, 23, 149];
-    answery = [11, 109, 1307];
+    var answerx = [2, 7, 28273727];
+    var answery = [2, 2, 7, 28273727];
     problems['Primefactors'] = {
-      param1: 13708,
+      param1: 395832178,
       answer1: answerx,
-      param2: 1567093,
+      param2: 2*395832178,
       answer2: answery,
+      coefficient: 2500,
+    }
+
+    
+    problems['The knight in the staircase'] = {
+      param1: 346789,
+      answer1: 29847,
+      param2: 2*346789,
+      answer2: 56239,
       coefficient: 2500,
     }
 

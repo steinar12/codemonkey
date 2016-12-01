@@ -40,7 +40,6 @@ var databaseInterface = function() {
      stmt.run(null,'Palli');
 
      stmt = db.prepare('INSERT INTO PROBLEMS VALUES (?,?,?,?)');
-     //stmt.run(null,'Primefactors','Return an array containing the prime factors of n in ascending order','Easy');
      for(var i = 0; i < problemss.length; i++){
        stmt.run(null, problemss[i].title, problemss[i].description, problemss[i].difficulty);
      }
@@ -177,28 +176,23 @@ var databaseInterface = function() {
 
               var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
               stmt.run(null,player);
-              console.log('inserted player: ' + player);
               var selectIds = 'SELECT PLAYERS._id AS player_id, PROBLEMS._id AS problem_id from PLAYERS,PROBLEMS where PLAYERS.name = ? AND PROBLEMS.title = ?'
                 
               var ids = [];
               db.each(selectIds, [player,problem], function(err, row) {
-                console.log(1);
-                console.log('here is row');
-                console.log(row);
                 var id =
                 {
                   player_id : row.player_id,
                   problem_id : row.problem_id,
                 }
-                console.log(2);
+                
 
                 ids.push(id);
                 
 
               }, function() {
-                  console.log(3);   
+                  
                   player_id = ids[0].player_id;
-                  console.log(4);
                   problem_id = ids[0].problem_id;
                   stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
                   stmt.run(null,score,player_id,problem_id);                    

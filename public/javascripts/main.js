@@ -1,8 +1,6 @@
 $(document).ready(function(){
 	// Add in all the problem elements
-	loadProblems();
-	problem_parameters = {};
-	defineParameters();
+	loadProblems();	
 });
 
 // Creates and returns a problem html element based on the problemInfo parameter.
