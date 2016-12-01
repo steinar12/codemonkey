@@ -85,7 +85,7 @@ function newSpinner(targetID){
 function addProblem(problemInfo, replace, id) {
   const problem = newDiv(['problem']);
 
-  const placeholder = String.prototype.indexOf('placeholder') !== -1;
+  const placeholder = problemInfo.title.indexOf('Placeholder') !== -1;
 
   const problemSimple = newDiv(['problem-simple']);
   const problemExtension = newDiv(['problem-extension']);
