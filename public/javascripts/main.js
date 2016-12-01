@@ -39,7 +39,7 @@ function newImg(classList, src) {
 function newInput(classList, placeholder) {
   const input = $('<input></input>');
   input.attr('placeholder', placeholder);
-  input.attr('maxlength', '12');
+  input.attr('maxlength', '6');
 
   for (let i = 0; i < classList.length; i++) {
     input.addClass(classList[i]);
@@ -48,11 +48,44 @@ function newInput(classList, placeholder) {
   return input;
 }
 
+// Returns a new spinner
+function newSpinner(targetID){
+  var opts = {
+    lines: 13 // The number of lines to draw
+    , length: 28 // The length of each line
+    , width: 14 // The line thickness
+    , radius: 42 // The radius of the inner circle
+    , scale: 0.25 // Scales overall size of the spinner
+    , corners: 1 // Corner roundness (0..1)
+    , color: '#FFF' // #rgb or #rrggbb or array of colors
+    , opacity: 0.25 // Opacity of the lines
+    , rotate: 0 // The rotation offset
+    , direction: 1 // 1: clockwise, -1: counterclockwise
+    , speed: 1 // Rounds per second
+    , trail: 60 // Afterglow percentage
+    , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+    , zIndex: 2e9 // The z-index (defaults to 2000000000)
+    , className: 'spinner' // The CSS class to assign to the spinner
+    , top: '50%' // Top position relative to parent
+    , left: '50%' // Left position relative to parent
+    , shadow: false // Whether to render a shadow
+    , hwaccel: false // Whether to use hardware acceleration
+    , position: 'relative' // Element positioning
+  }
+  var target = document.getElementById(targetID);
+  console.log(targetID);
+  console.log(target);
+  var spinner = new Spinner(opts).spin(target);
+  return spinner;
+}
+
 
 // Creates and returns a problem html element based on the problemInfo parameter.
 // problemInfo: {difficulty: 'Easy', title: 'Red riding hood', highscores: [{rank: 1, name: bjarni, score: 43},...]};
-function addProblem(problemInfo, replace) {
+function addProblem(problemInfo, replace, id) {
   const problem = newDiv(['problem']);
+
+  const placeholder = String.prototype.indexOf('placeholder') !== -1;
 
   const problemSimple = newDiv(['problem-simple']);
   const problemExtension = newDiv(['problem-extension']);
@@ -83,6 +116,7 @@ function addProblem(problemInfo, replace) {
   const codeMirrorSubmit = newDiv(['codemirror-btn',
     'codemirror-submit-btn']);
   codeMirrorSubmit.text('Run');
+  codeMirrorSubmit.attr('id', 'submit' + id);
   codeMirrorMenuBar.append(codeMirrorSubmit);
 
   problemDiff.text(problemInfo.difficulty);
@@ -223,9 +257,11 @@ function addProblem(problemInfo, replace) {
   });
 
   codeMirrorSubmit.click(() => {
-    if (waitingForResponse) return;
+    if (waitingForResponse || placeholder) return;
+    codeMirrorSubmit.text('');
+    const spinner = newSpinner("submit" + id);
     const solution = myCodeMirror.getValue();
-    runSolution(solution, problem, problemInfo, writeToConsole);
+    runSolution(solution, problem, problemInfo, writeToConsole, spinner, codeMirrorSubmit);
   });
 
   exitButton.click(() => {
@@ -264,7 +300,7 @@ function addProblem(problemInfo, replace) {
 // inserts all the problems into the DOM
 function insertProblems(problems) {
   for (let i = 0; i < problems.length; i++) {
-    addProblem(problems[i]);
+    addProblem(problems[i], false, i);
   }
 }
 
@@ -364,13 +400,15 @@ function addCorrectAnswerPopup(problem, problemInfo, response) {
 }
 
 // Asks the server to run the code that is currently in the editor
-function runSolution(solution, problem, problemInfo, writeToConsole) {
+function runSolution(solution, problem, problemInfo, writeToConsole, spinner, submitButton) {
   waitingForResponse = true;
   const query = {
     solution,
     title: problemInfo.title,
   };
   $.post('/submit', query, (resp) => {
+    spinner.stop();
+    submitButton.text("Run");
     handleResponse(resp, problem, problemInfo, writeToConsole);
   });
 }
