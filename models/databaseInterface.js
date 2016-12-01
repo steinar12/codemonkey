@@ -27,7 +27,7 @@ var databaseInterface = function() {
     /**
    * Setur inn öll upphafsgögn, öll problem og fleira
    * 
-   */
+   */       
   self.loadInitialData = function() {
      
      //TEST DATA
@@ -45,11 +45,11 @@ var databaseInterface = function() {
      }
 
      stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
-     stmt.run(null,'69','1','1');
+     stmt.run(null,'5','1','1');
      stmt.run(null,'1','2','1');
      stmt.run(null,'5','3','1');
      stmt.run(null,'2','4','1');
-     stmt.run(null,'10','5','1');
+     stmt.run(null,'3','5','1');
      stmt.run(null,'3','6','1');
      console.log(problemss.length);
      for(var i = 0; i < problemss.length; i++){
@@ -71,9 +71,9 @@ var databaseInterface = function() {
       var statement = 'SELECT score, name FROM SCORES JOIN PLAYERS ON PLAYERS._id = SCORES._player_id'+
                        ' JOIN PROBLEMS ON PROBLEMS._id = SCORES._problem_id WHERE PROBLEMS.title = ?';
 
-
       if (typeof problem === 'string') problemString = problem;
       else problemString = problem.title;
+
       var scores = [];
       db.each(statement, [problemString], function(err, row) {
         var score = 
@@ -85,6 +85,7 @@ var databaseInterface = function() {
         scores.push(score);
 
       }, function() {
+        
         deliverScores(scores,problem,problems);
        
                   
@@ -144,6 +145,7 @@ var databaseInterface = function() {
       var problems = [];
       var statement = 'SELECT * FROM PROBLEMS';
       db.each(statement, function(err, row) {
+
         var problem = {
           id : row._id,
           title : row.title,
@@ -154,6 +156,7 @@ var databaseInterface = function() {
         problems.push(problem);       
 
       }, function() {
+
         deliverProblems(problems);       
                   
       });
@@ -179,7 +182,7 @@ var databaseInterface = function() {
               var stmt = db.prepare('INSERT INTO PLAYERS VALUES (?,?)');
               stmt.run(null,player);
               var selectIds = 'SELECT PLAYERS._id AS player_id, PROBLEMS._id AS problem_id from PLAYERS,PROBLEMS where PLAYERS.name = ? AND PROBLEMS.title = ?'
-                
+  
               var ids = [];
               db.each(selectIds, [player,problem], function(err, row) {
                 var id =
@@ -193,9 +196,10 @@ var databaseInterface = function() {
                 
 
               }, function() {
-                  
+
                   player_id = ids[0].player_id;
                   problem_id = ids[0].problem_id;
+
                   stmt = db.prepare('INSERT INTO SCORES VALUES (?,?,?,?)');
                   stmt.run(null,score,player_id,problem_id);                    
                   
