@@ -153,6 +153,7 @@ html, body {
 .problem-title {
 	width: 70%;
 	height: 100%;
+	overflow: hidden;
 
 	text-align: center;
 	vertical-align: middle;

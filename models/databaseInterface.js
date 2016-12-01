@@ -6,7 +6,7 @@ var databaseInterface = function() {
   var sqlite3 = require("sqlite3").verbose();
   var db = new sqlite3.Database(file);
 
-
+  // initialises the database
   self.init = function() {
     db.serialize(function() {
       if (!exists) {
@@ -61,6 +61,7 @@ var databaseInterface = function() {
 
   };
 
+  // Gets highscores for a specific problem
     self.getHighScores = function(problem,deliverScores,problems) {
 
     var problemString = '';
@@ -135,6 +136,7 @@ var databaseInterface = function() {
 
   };
 
+  // Get's all problems from the database
   self.getProblems = function(deliverProblems){
 
      db.serialize(function() {
@@ -212,6 +214,7 @@ var databaseInterface = function() {
 
 var description = 'This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies! This is a description of the problem. Read this carefully before you even attempt to solve this problem. Beware, this problem is not for babies!';
 
+// This is the data for all the problems, it's only here temporarilly. They are also stored in the database.
 var problemss = [
   {
     difficulty: 'Easy',

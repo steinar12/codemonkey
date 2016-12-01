@@ -120,6 +120,7 @@ function addProblem(problemInfo, replace){
 	});
 
 	codeMirrorSubmit.click(function(){
+		if(waitingForResponse) return;
 		var solution = myCodeMirror.getValue();
 		console.log("Submit button clicked!");
 		runSolution(solution, problem, problemInfo, writeToConsole);
@@ -194,6 +195,7 @@ function newInput(classList, placeholder){
 	return input;
 }
 
+// Generates a new highscore table. (jquery elements)
 function generateHSTable(highscores){
 
 	var hsTable = newDiv(['highscore-table']);
@@ -218,14 +220,16 @@ function generateHSTable(highscores){
 	return hsTable;
 }
 
-
+// Asks the server to run the code that is currently in the editor
 function runSolution(solution, problem, problemInfo, writeToConsole){
+	waitingForResponse = true;
 	var query = {solution: solution, title: problemInfo.title};
 	$.post('/submit', query, function(resp) {
 		handleResponse(resp, problem, problemInfo, writeToConsole);
   	});
 }
 
+// Tells the server that you want to submit your score, with the name Playername.
 function submitScore(playerName, problemInfo){
 	var query = {name: playerName, problem: problemInfo.title};
 	console.log(query);
@@ -235,7 +239,11 @@ function submitScore(playerName, problemInfo){
   	});
 }
 
+// Handles different kinds of responses from the server. The responses are
+// sent to the client whenever the client submits code to the server.
 function handleResponse(response, problem, problemInfo, writeToConsole){
+
+	waitingForResponse = false;
 
 	// Ef að svarið er rétt, þá birtum við scorið
 	if(response.type === "Rank") {
@@ -248,6 +256,10 @@ function handleResponse(response, problem, problemInfo, writeToConsole){
 	writeToConsole(consoleMessage);
 }
 
+// Temporary solution to a bug fix
+var waitingForResponse = false;
+
+// Creates a new CorrectAnswerPopup. (the one that pops up when you submit a correct solution)
 function addCorrectAnswerPopup(problem, problemInfo, response){
 	var popupWrapper = newDiv(['popup-wrapper']);
 	var popupBackground = newDiv(['popup-background']);
@@ -290,6 +302,7 @@ function addCorrectAnswerPopup(problem, problemInfo, response){
 	problem.append(popupWrapper);
 }
 
+// Load all the problems from the server
 function loadProblems(){
   $.ajax({
     type: 'GET',
@@ -301,6 +314,7 @@ function loadProblems(){
   });
 }
 
+// inserts all the problems into the DOM
 function insertProblems(problems){
 	for(var i = 0; i < problems.length; i++){
 		addProblem(problems[i]);

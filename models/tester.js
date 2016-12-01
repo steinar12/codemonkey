@@ -1,3 +1,6 @@
+// A testing module.
+// It's used to test the user's code submission in various ways.
+
 var tester = function() {
   var nanoTimer = require('nanotimer');
   var timeout = require('node-timeout');
@@ -13,7 +16,8 @@ var tester = function() {
 
   var self = this;
 
-
+  // Takes the text input from the client and converts it into actual code.
+  // Runs the code in a sandbox (safe environment).
   self.examineSolution = function(solution, problem, deliverResults) {
 
     var string_func = "function speedtest_function(solution_function, param) {var start = new Date();var totalTime = 0;for (var i = 0; i < 20; i++) {solution_function(param);}    var end = new Date() - start; var time = end/20; return time;}";
@@ -45,6 +49,7 @@ var tester = function() {
 
   };
 
+  // Returns a score based on the time complexity of the solution.
   self.growthScore = function(time1, time2, problem) {
     var ratio = time1 / time2;
     var ratioSquared = ratio * ratio;
@@ -53,7 +58,8 @@ var tester = function() {
     return score;
   }
 
-
+  // Handles the code from the client. If it's not real code, then the client is notified.
+  // If it's not the correct answer, the client is notified  etc.
   self.handleResult = function(result, problem, deliverResults) {
 
     var resp = {
@@ -94,7 +100,7 @@ var tester = function() {
 
   };
 
-
+  // Checks whether to arrays are equal or not.
   self.equalArrays = function(array1, array2) {
     var equalLength = array1.length === array2.length;
     if (!equalLength) return false;
@@ -106,6 +112,7 @@ var tester = function() {
     return true;
   }
 
+  // Checks if the answer is correct.
   self.compareToAnswer = function(result, problem, answer) {
 
     switch (problem) {
@@ -134,6 +141,7 @@ var tester = function() {
     return false;
   };
 
+  // All the parameter that are passed into the functions that the users create. (based on which problem they are solving)
   self.defineParameters = function() {
     var answerx = [2, 7, 28273727];
     var answery = [2, 2, 7, 28273727];
